@@ -28,3 +28,11 @@
 - CI workflow now has four jobs: `lint`, `types`, `unit`, and `integration`.
 - Each job uses `actions/setup-python@v5` with Python 3.11, `astral-sh/setup-uv@v3`, `.venv` caching keyed on `uv.lock`, and `uv sync --frozen`.
 - `integration` waits on `unit`; no live-test env var or secrets were added.
+
+## [2026-05-19] Task: T4
+
+- `TokenStore` is a protocol in `src/youtube_mcp/auth/token_store.py`; both concrete backends serialize tokens only with `TokenBundle.model_dump_json()` and restore with `TokenBundle.model_validate_json()`.
+- `KeyringTokenStore.list_keys()` uses a sidecar keyring entry named `__youtube_mcp_registry__` because the `keyring` API has no portable enumeration primitive.
+- `FileTokenStore` defaults to `${XDG_CONFIG_HOME:-~/.config}/youtube-mcp/tokens`, creates the token dir at `0o700`, and chmods token JSON files to `0o600` after each write.
+- `make_token_store("auto")` probes keyring by reading the registry; `keyring.errors.NoKeyringError` falls back to file storage and emits a stderr warning.
+- Unit tests mock `keyring.get_password` / `set_password` / `delete_password` with `pytest.MonkeyPatch`; no test touches the real system keyring.
