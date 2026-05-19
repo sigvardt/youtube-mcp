@@ -64,3 +64,10 @@
 - `quotaExceeded` should be treated as retryable even when it comes from the nested `errors[0].reason` shape, while `dailyLimitExceeded` must stay non-retryable.
 - `RetryPolicy.jitter` is useful as a testability switch: random exponential backoff for normal use, deterministic exponential waits when `jitter=False`.
 - `tenacity.before_sleep_log(logger, logging.WARNING)` cleanly satisfies the retry logging requirement without introducing the FastMCP context dependency yet.
+
+## [2026-05-19] Task: T11
+
+- FastMCP installed version: `3.3.1`.
+- `FastMCP.__init__` accepts `name: str | None = None` and keyword `version: str | int | float | None = None`, so `FastMCP(name="youtube-mcp", version=__version__)` is supported.
+- `FastMCP.run` signature is `(self, transport: Transport | None = None, show_banner: bool | None = None, **transport_kwargs: Any) -> None`; T11 can pass `transport="stdio"` and HTTP/SSE `host`/`port` kwargs directly, with `show_banner=False` to avoid stdio pollution.
+- `FastMCP.resource` signature begins `(self, uri: str, *, name: str | None = None, version: str | int | None = None, ...)`; the decorator preserves the original function, so unit tests can call local resource handler functions directly when registry internals are not needed.
