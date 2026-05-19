@@ -1,0 +1,21 @@
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 9 items
+
+tests/unit/test_oauth_flow.py::test_load_client_creds_from_file_parses_installed_block PASSED [ 11%]
+tests/unit/test_oauth_flow.py::test_load_client_creds_from_file_handles_web_block PASSED [ 22%]
+tests/unit/test_oauth_flow.py::test_load_client_creds_from_file_raises_on_malformed PASSED [ 33%]
+tests/unit/test_oauth_flow.py::test_load_client_creds_from_file_raises_on_missing_required_fields PASSED [ 44%]
+tests/unit/test_oauth_flow.py::test_run_oauth_flow_returns_token_bundle PASSED [ 55%]
+tests/unit/test_oauth_flow.py::test_run_oauth_flow_raises_when_no_refresh_token PASSED [ 66%]
+tests/unit/test_oauth_flow.py::test_run_oauth_flow_writes_manual_url_to_stderr PASSED [ 77%]
+tests/unit/test_oauth_flow.py::test_refresh_credentials_translates_invalid_grant PASSED [ 88%]
+tests/unit/test_oauth_flow.py::test_refresh_credentials_returns_new_bundle PASSED [100%]
+
+============================== 9 passed in 0.13s ===============================
