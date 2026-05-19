@@ -29,6 +29,13 @@
 - Each job uses `actions/setup-python@v5` with Python 3.11, `astral-sh/setup-uv@v3`, `.venv` caching keyed on `uv.lock`, and `uv sync --frozen`.
 - `integration` waits on `unit`; no live-test env var or secrets were added.
 
+## [2026-05-19] Task: T8
+
+- Quota tracking uses `QuotaState.model_dump_json()` / `QuotaState.model_validate_json()` for one JSON file per account and sets each file to `0o600` after writing.
+- `QuotaTracker` keeps `storage_dir` injectable for tests and future tool registration, with default storage under `${XDG_CONFIG_HOME:-~/.config}/youtube-mcp/quota`.
+- UTC rollover is testable through the module-level `_utcnow()` helper; tests patch it with `pytest.MonkeyPatch` instead of relying on time-freezing dependencies.
+- T8 verification is green for `tests/unit/test_quota.py`, ruff on quota files, and strict mypy on `quota.py`; whole-`utils` mypy currently reports non-T8 issues in `cache.py` and `retry.py`.
+
 ## [2026-05-19] Task: T4
 
 - `TokenStore` is a protocol in `src/youtube_mcp/auth/token_store.py`; both concrete backends serialize tokens only with `TokenBundle.model_dump_json()` and restore with `TokenBundle.model_validate_json()`.
@@ -36,3 +43,24 @@
 - `FileTokenStore` defaults to `${XDG_CONFIG_HOME:-~/.config}/youtube-mcp/tokens`, creates the token dir at `0o700`, and chmods token JSON files to `0o600` after each write.
 - `make_token_store("auto")` probes keyring by reading the registry; `keyring.errors.NoKeyringError` falls back to file storage and emits a stderr warning.
 - Unit tests mock `keyring.get_password` / `set_password` / `delete_password` with `pytest.MonkeyPatch`; no test touches the real system keyring.
+
+## [2026-05-19] Task: T9
+
+- `src/youtube_mcp/utils/pagination.py` follows the repo’s Pydantic v2 style: `BaseModel` + `ConfigDict(extra="forbid")` and explicit `Field`/typed defaults where needed.
+- `extract_page` should normalize YouTube list responses into a small `PageResult` model instead of leaking raw response parsing into callers.
+- `iter_pages` is best kept opt-in and quota-safe: default to a hard cap of 10 pages, warn when `max_pages=None` is supplied, and report progress only when `ctx.report_progress` exists.
+- Unit tests in `tests/unit/test_pagination.py` work well with stubbed factories and `Mock`-backed progress callbacks; this matches the existing `tests/unit/test_types.py` style.
+- Adding `src/youtube_mcp/py.typed` and a local pyright suppression for missing type stubs kept the new test import clean without changing behavior.
+
+## [2026-05-19] Task: T10
+
+- `TTLCache` uses an in-memory `dict[str, tuple[value, expiry_dt]]` and a module-level `_now()` helper so tests can monkeypatch time deterministically.
+- The `@cached` decorator keeps a per-decorated-function `TTLCache` when no cache is injected, and callers must include account identity in `key_fn` when endpoint results vary by account.
+- `uv run pytest tests/unit/test_cache.py -v` passed with 8 tests, and `uv run ruff check src/youtube_mcp/utils/cache.py tests/unit/test_cache.py` passed after import sorting.
+
+## [2026-05-19] Task: T7
+
+- `HttpError` from `googleapiclient` already parses `error_details` from the response body, but the retry classifier still needs a fallback pass over raw JSON content to catch quota reasons when `error_details` is missing or cleared.
+- `quotaExceeded` should be treated as retryable even when it comes from the nested `errors[0].reason` shape, while `dailyLimitExceeded` must stay non-retryable.
+- `RetryPolicy.jitter` is useful as a testability switch: random exponential backoff for normal use, deterministic exponential waits when `jitter=False`.
+- `tenacity.before_sleep_log(logger, logging.WARNING)` cleanly satisfies the retry logging requirement without introducing the FastMCP context dependency yet.
