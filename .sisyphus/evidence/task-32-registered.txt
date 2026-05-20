@@ -1,0 +1,14 @@
+Task T32 registration evidence
+
+Registered FastMCP tools:
+- youtube_analytics_reports_query
+- youtube_analytics_reports_describe
+
+Decorator metadata:
+- api: analytics
+- method: youtubeAnalytics.reports.query
+- scope: https://www.googleapis.com/auth/yt-analytics.readonly
+- cost: 0
+
+Verification command:
+- uv run pytest tests/unit/test_tools_analytics_reports.py -v

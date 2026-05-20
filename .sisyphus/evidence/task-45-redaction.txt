@@ -1,0 +1,6 @@
+Command: uv run python -c "scan tests/integration/cassettes for Bearer ya29, refresh_token.*1//, client_secret.*GOCSPX, and synthetic-access-token"
+
+Result: PASS
+
+Output:
+Forbidden grep ZERO

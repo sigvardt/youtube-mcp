@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+
+# Local tool runtime noise
+.playwright-mcp/
+
+# Project tokens and local env
+tokens/
+.env
+.env.*

@@ -1,0 +1,6 @@
+# Task 2 CI jobs
+
+Command: grep -E "^\s+(lint|types|unit|integration):" .github/workflows/ci.yml | wc -l
+Exit code: 0
+Stdout:        4
+

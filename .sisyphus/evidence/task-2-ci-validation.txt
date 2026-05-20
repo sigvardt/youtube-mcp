@@ -1,0 +1,10 @@
+# Task 2 CI validation
+
+Command: python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))"
+Exit code: 0
+Stdout: <empty>
+
+Command: grep -c "RUN_LIVE_TESTS" .github/workflows/ci.yml
+Exit code: 1
+Stdout: 0
+

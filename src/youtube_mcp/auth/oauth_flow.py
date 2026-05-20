@@ -14,7 +14,9 @@ from typing import Any, Final, Protocol, cast
 from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore[import-untyped]
+from google_auth_oauthlib.flow import (  # type: ignore[import-untyped]  # oauthlib lacks stubs
+    InstalledAppFlow,
+)
 
 from youtube_mcp.types import AccountConfig, TokenBundle
 
@@ -122,7 +124,7 @@ def run_oauth_flow(
     raw_creds = flow.run_local_server(
         port=port,
         open_browser=open_browser,
-        prompt="consent",
+        prompt="select_account consent",
         access_type="offline",
     )
     creds = cast(OAuthCredentials, cast(object, raw_creds))

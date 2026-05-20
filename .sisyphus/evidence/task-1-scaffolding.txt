@@ -1,0 +1,30 @@
+$ uv sync
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Resolved 113 packages in 17ms
+Checked 108 packages in 12ms
+
+(exit 0)
+
+$ uv run python -c "import youtube_mcp; print(youtube_mcp.__version__)"
+0.0.1
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+
+(exit 0)
+
+$ uv run python -c "import fastmcp, googleapiclient, keyring, tenacity, pydantic, typer; print('ok')"
+ok
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+
+(exit 0)
+
+$ uv run ruff check src/
+All checks passed!
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+
+(exit 0)
+
+$ uv run mypy src/youtube_mcp/
+Success: no issues found in 8 source files
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+
+(exit 0)

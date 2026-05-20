@@ -1,0 +1,9 @@
+Command: uv run python -c "import youtube_mcp.tools.videos; from youtube_mcp.server import mcp; import asyncio; tools = asyncio.run(mcp.list_tools()); names = sorted(tool.name for tool in tools if tool.name.startswith('youtube_videos_')); print('\n'.join(names))"
+
+Output:
+youtube_videos_getRating
+youtube_videos_insert
+youtube_videos_list
+youtube_videos_rate
+youtube_videos_reportAbuse
+youtube_videos_update

@@ -1,0 +1,32 @@
+Task T18 comments tools registration evidence
+Date: 2026-05-19
+
+Implemented files:
+- src/youtube_mcp/tools/comments.py
+- tests/unit/test_tools_comments.py
+
+Registered tool names observed by manual FastMCP driver:
+- youtube_comments_delete
+- youtube_comments_insert
+- youtube_comments_list
+- youtube_comments_markAsSpam
+- youtube_comments_setModerationStatus
+- youtube_comments_update
+
+Manual driver executed:
+- uv run python -c '<configured mocked FrameworkContext; listed FastMCP comments tools; ran youtube_comments_setModerationStatus through FunctionTool.run>'
+
+Manual driver output:
+- ['youtube_comments_delete', 'youtube_comments_insert', 'youtube_comments_list', 'youtube_comments_markAsSpam', 'youtube_comments_setModerationStatus', 'youtube_comments_update']
+- {"ok":true,"kwargs":{"id":["comment-1"],"moderationStatus":"published","banAuthor":null}}
+
+Verification:
+- lsp_diagnostics src/youtube_mcp/tools/comments.py: no diagnostics
+- lsp_diagnostics tests/unit/test_tools_comments.py: no diagnostics
+- uv run pytest tests/unit/test_tools_comments.py -v: 3 passed, 1 warning
+- uv run ruff check src/youtube_mcp/tools/comments.py tests/unit/test_tools_comments.py: all checks passed
+- uv run mypy --strict src/youtube_mcp/tools/comments.py: success, no issues found
+- forbidden video-delete grep: no matches
+
+Plan file note:
+- .sisyphus/plans/youtube-mcp.md was not modified because executor Work_Context marks plan files read-only.

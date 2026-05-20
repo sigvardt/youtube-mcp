@@ -1,0 +1,20 @@
+interactions:
+- request:
+    body: null
+    headers:
+      authorization:
+      - DUMMY
+    method: GET
+    uri: https://youtubereporting.googleapis.com/v1/jobs?includeSystemManaged=true&pageSize=10&alt=json
+  response:
+    body:
+      string: '{"jobs":[{"id":"JOB_TEST_CHANNEL_DAILY","name":"Synthetic channel basic daily","reportTypeId":"channel_basic_a2","createTime":"2026-05-01T00:00:00Z","expireTime":"2026-06-01T00:00:00Z"}]}'
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Tue, 19 May 2026 00:00:00 GMT
+    status:
+      code: 200
+      message: OK
+version: 1

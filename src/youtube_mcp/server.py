@@ -11,6 +11,7 @@ from typing import Literal, TypedDict
 from fastmcp import FastMCP
 
 from . import __version__
+from .tools import import_tool_modules
 from .utils.quota import QuotaTracker
 
 Transport = Literal["stdio", "http", "sse"]
@@ -77,9 +78,7 @@ def status_resource() -> dict[str, object]:
 def make_app() -> FastMCP:
     """Return the configured FastMCP app after lazy registration imports."""
 
-    # Future tool module imports: youtube_mcp.tools.activities, youtube_mcp.tools.captions,
-    # youtube_mcp.tools.channels, youtube_mcp.tools.comments, youtube_mcp.tools.playlists,
-    # youtube_mcp.tools.search, youtube_mcp.tools.videos, youtube_mcp.tools.analytics.
+    import_tool_modules()
     return mcp
 
 

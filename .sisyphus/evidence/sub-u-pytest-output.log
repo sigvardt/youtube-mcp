@@ -1,0 +1,36 @@
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 21 items / 3 deselected / 18 selected
+
+tests/live/test_acid_read_all_accounts.py::test_channels_list_mine[jsigvardt] PASSED [  5%]
+tests/live/test_acid_read_all_accounts.py::test_channels_list_mine[power-1] PASSED [ 11%]
+tests/live/test_acid_read_all_accounts.py::test_channels_list_mine[power-2] PASSED [ 16%]
+tests/live/test_acid_read_all_accounts.py::test_playlists_list_mine[jsigvardt] PASSED [ 22%]
+tests/live/test_acid_read_all_accounts.py::test_playlists_list_mine[power-1] PASSED [ 27%]
+tests/live/test_acid_read_all_accounts.py::test_playlists_list_mine[power-2] PASSED [ 33%]
+tests/live/test_acid_read_all_accounts.py::test_subscriptions_list_mine[jsigvardt] PASSED [ 38%]
+tests/live/test_acid_read_all_accounts.py::test_subscriptions_list_mine[power-1] PASSED [ 44%]
+tests/live/test_acid_read_all_accounts.py::test_subscriptions_list_mine[power-2] PASSED [ 50%]
+tests/live/test_acid_read_all_accounts.py::test_videos_list_mine[jsigvardt] PASSED [ 55%]
+tests/live/test_acid_read_all_accounts.py::test_videos_list_mine[power-1] PASSED [ 61%]
+tests/live/test_acid_read_all_accounts.py::test_videos_list_mine[power-2] PASSED [ 66%]
+tests/live/test_acid_read_all_accounts.py::test_analytics_reports_query_views[jsigvardt] PASSED [ 72%]
+tests/live/test_acid_read_all_accounts.py::test_analytics_reports_query_views[power-1] PASSED [ 77%]
+tests/live/test_acid_read_all_accounts.py::test_analytics_reports_query_views[power-2] PASSED [ 83%]
+tests/live/test_acid_read_all_accounts.py::test_reporting_report_types_list[jsigvardt] PASSED [ 88%]
+tests/live/test_acid_read_all_accounts.py::test_reporting_report_types_list[power-1] PASSED [ 94%]
+tests/live/test_acid_read_all_accounts.py::test_reporting_report_types_list[power-2] PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================= 18 passed, 3 deselected, 1 warning in 4.39s ==================

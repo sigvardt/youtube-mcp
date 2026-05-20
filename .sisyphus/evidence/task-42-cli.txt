@@ -1,0 +1,25 @@
+Task T42 CLI verification - 2026-05-19
+
+Commands run:
+- uv run youtube-mcp --help
+  Result: exit 0; help showed top-level commands serve, status, doctor, auth, tools and command tree text including auth add/list/remove/refresh and tools list.
+- uv run youtube-mcp auth --help
+  Result: exit 0; help showed add, list, remove, refresh.
+- uv run youtube-mcp tools list
+  Result: exit 0; printed registered MCP tools including youtube_tests_insert and API/method columns.
+- uv run youtube-mcp tools list --api youtube
+  Result: exit 0; printed only youtube API tools.
+- uv run youtube-mcp doctor
+  Result: exit 0; printed "No accounts configured." in this local environment.
+- uv run pytest tests/unit/test_cli.py -v
+  Result: 4 passed, 1 warning.
+- uv run ruff check src/youtube_mcp/cli.py tests/unit/test_cli.py
+  Result: All checks passed.
+- uv run mypy --strict src/youtube_mcp/cli.py
+  Result: Success: no issues found in 1 source file.
+- uv build
+  Result: built dist/youtube_mcp-0.0.1.tar.gz and dist/youtube_mcp-0.0.1-py3-none-any.whl.
+
+LSP diagnostics:
+- src/youtube_mcp/cli.py: no diagnostics found.
+- tests/unit/test_cli.py: no diagnostics found.

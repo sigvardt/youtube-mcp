@@ -1,0 +1,20 @@
+interactions:
+- request:
+    body: null
+    headers:
+      authorization:
+      - DUMMY
+    method: GET
+    uri: https://youtubeanalytics.googleapis.com/v2/reports?ids=channel%3D%3DMINE&startDate=2026-05-01&endDate=2026-05-07&metrics=views%2CestimatedMinutesWatched&dimensions=day&sort=day&maxResults=7&alt=json
+  response:
+    body:
+      string: '{"kind":"youtubeAnalytics#resultTable","columnHeaders":[{"name":"day","columnType":"DIMENSION","dataType":"STRING"},{"name":"views","columnType":"METRIC","dataType":"INTEGER"},{"name":"estimatedMinutesWatched","columnType":"METRIC","dataType":"INTEGER"}],"rows":[["2026-05-01",101,202],["2026-05-02",111,222]]}'
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Tue, 19 May 2026 00:00:00 GMT
+    status:
+      code: 200
+      message: OK
+version: 1

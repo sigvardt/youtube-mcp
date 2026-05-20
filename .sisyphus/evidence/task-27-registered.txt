@@ -1,0 +1,22 @@
+Task 27 registration evidence
+Date: 2026-05-19
+
+Implemented:
+- src/youtube_mcp/tools/video_meta.py
+- tests/unit/test_tools_video_meta.py
+
+Registered MCP tools observed via direct FastMCP driver:
+- youtube_videoAbuseReportReasons_list
+- youtube_videoCategories_list
+
+Manual driver:
+uv run python -c "import asyncio; import youtube_mcp.tools.video_meta; from youtube_mcp.server import mcp; print(sorted(tool.name for tool in asyncio.run(mcp.list_tools()) if tool.name.startswith('youtube_video')))"
+Output:
+['youtube_videoAbuseReportReasons_list', 'youtube_videoCategories_list']
+
+Verification:
+- uv run pytest tests/unit/test_tools_video_meta.py -v: 2 passed
+- uv run ruff check src/youtube_mcp/tools/video_meta.py tests/unit/test_tools_video_meta.py: All checks passed
+- uv run mypy --strict src/youtube_mcp/tools/video_meta.py: Success, no issues found
+- rg safety check over src and tests for forbidden video-deletion strings: no matches
+- uv build --out-dir /var/folders/fs/s4w_v3qd3px0gg4qlt25wrbc0000gn/T/opencode/youtube-mcp-t27-build: source distribution and wheel built successfully

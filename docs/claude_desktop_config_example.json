@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "youtube-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/youtube-mcp",
+        "run",
+        "youtube-mcp",
+        "serve",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "YOUTUBE_MCP_ENFORCE_GUARD": "1",
+        "YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE": "@your-channel-handle"
+      }
+    }
+  }
+}

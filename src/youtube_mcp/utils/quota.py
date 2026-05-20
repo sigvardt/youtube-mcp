@@ -1,5 +1,7 @@
 """Persistent YouTube API quota tracking."""
 
+# pyright: reportMissingTypeStubs=false
+
 from __future__ import annotations
 
 import logging
@@ -46,6 +48,10 @@ QUOTA_COSTS: dict[str, int] = {
     "youtube.playlistItems.insert": 50,
     "youtube.playlistItems.update": 50,
     "youtube.playlistItems.delete": 50,
+    "youtube.playlistImages.list": 1,
+    "youtube.playlistImages.insert": 50,
+    "youtube.playlistImages.update": 50,
+    "youtube.playlistImages.delete": 50,
     "youtube.search.list": 100,
     "youtube.subscriptions.list": 1,
     "youtube.subscriptions.insert": 50,
@@ -56,6 +62,7 @@ QUOTA_COSTS: dict[str, int] = {
     "youtube.videos.rate": 50,
     "youtube.videos.getRating": 1,
     "youtube.videos.reportAbuse": 50,
+    "youtube.videoTrainability.get": 1,
     "youtube.thumbnails.set": 50,
     "youtube.watermarks.set": 50,
     "youtube.watermarks.unset": 50,
@@ -75,6 +82,7 @@ QUOTA_COSTS: dict[str, int] = {
     "youtube.liveChatMessages.list": 1,
     "youtube.liveChatMessages.insert": 50,
     "youtube.liveChatMessages.delete": 50,
+    "youtube.liveChatMessages.transition": 50,
     "youtube.liveChatModerators.list": 1,
     "youtube.liveChatModerators.insert": 50,
     "youtube.liveChatModerators.delete": 50,
@@ -93,9 +101,11 @@ QUOTA_COSTS: dict[str, int] = {
     "youtubeAnalytics.groupItems.delete": 1,
     "youtubeReporting.jobs.list": 1,
     "youtubeReporting.jobs.create": 1,
+    "youtubeReporting.jobs.get": 1,
     "youtubeReporting.jobs.delete": 1,
     "youtubeReporting.jobs.reports.list": 1,
     "youtubeReporting.jobs.reports.get": 1,
+    "youtubeReporting.reports.waitForNext": 0,
     "youtubeReporting.reportTypes.list": 1,
 }
 

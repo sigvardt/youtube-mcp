@@ -1,0 +1,10 @@
+Task: T30 superChatEvents tool registration
+
+Implemented `src/youtube_mcp/tools/super_chat_events.py` with the readonly `youtube_superChatEvents_list` MCP tool and added mocked-discovery coverage in `tests/unit/test_tools_super_chat_events.py`.
+
+Verification:
+- `uv run pytest tests/unit/test_tools_super_chat_events.py -v`
+- `uv run ruff check src/youtube_mcp/tools/super_chat_events.py tests/unit/test_tools_super_chat_events.py`
+- `uv run mypy --strict src/youtube_mcp/tools/super_chat_events.py`
+- `uv build`
+- `videos.delete|videos_delete` grep returned no matches

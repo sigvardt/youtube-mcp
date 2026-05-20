@@ -11,7 +11,7 @@ from collections.abc import Callable, Mapping
 from typing import ParamSpec, TypeVar, cast
 
 from googleapiclient.errors import HttpError
-from httplib2 import ServerNotFoundError  # type: ignore[import-untyped]
+from httplib2 import ServerNotFoundError  # type: ignore[import-untyped]  # httplib2 lacks stubs
 from tenacity import (
     before_sleep_log,
     retry,

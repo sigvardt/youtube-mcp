@@ -1,0 +1,23 @@
+Task 21 members tool registration evidence
+Date: 2026-05-19
+
+Registered tools verified by tests:
+- youtube_members_list
+- youtube_membershipsLevels_list
+
+Verification performed:
+- lsp_diagnostics on src/youtube_mcp/types.py: no diagnostics
+- lsp_diagnostics on src/youtube_mcp/tools/_framework.py: no diagnostics
+- lsp_diagnostics on src/youtube_mcp/tools/members.py: no diagnostics
+- lsp_diagnostics on tests/unit/test_tools_members.py: no diagnostics
+- uv run pytest tests/unit/test_tools_members.py -v: 3 passed
+- uv run ruff check src/youtube_mcp/tools/members.py tests/unit/test_tools_members.py: passed
+- uv run mypy --strict src/youtube_mcp/tools/members.py: passed
+- uv run ruff check src/youtube_mcp/tools/_framework.py src/youtube_mcp/types.py: passed
+- uv run mypy --strict src/youtube_mcp/tools/_framework.py src/youtube_mcp/types.py: passed
+- forbidden video deletion literal grep: no matches
+- uv build: built source distribution and wheel successfully
+- manual uv-run Python driver: imported both tools, executed mocked members and levels calls, recorded quota twice
+
+Plan checkbox note:
+- The delegated Work_Context marks .sisyphus/plans/youtube-mcp.md as read-only and says only the Orchestrator manages plan state, so the T21 checkbox was not edited by this task executor.

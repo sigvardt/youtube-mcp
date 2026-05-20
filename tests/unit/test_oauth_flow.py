@@ -12,7 +12,7 @@ from unittest.mock import MagicMock
 import pytest
 from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore[import-untyped]
 
 from youtube_mcp.auth.oauth_flow import (
     AUTH_URI,
@@ -121,7 +121,7 @@ def test_run_oauth_flow_returns_token_bundle(monkeypatch: pytest.MonkeyPatch) ->
     flow.run_local_server.assert_called_once_with(
         port=8765,
         open_browser=False,
-        prompt="consent",
+        prompt="select_account consent",
         access_type="offline",
     )
     assert bundle == TokenBundle(
@@ -170,7 +170,7 @@ def test_run_oauth_flow_writes_manual_url_to_stderr(
 
 
 def test_refresh_credentials_translates_invalid_grant(monkeypatch: pytest.MonkeyPatch) -> None:
-    original_error = RefreshError("invalid_grant: token revoked")
+    original_error = RefreshError("invalid_grant: token revoked")  # type: ignore[no-untyped-call]
 
     def raise_invalid_grant(self: Credentials, request: object) -> None:
         raise original_error

@@ -1,0 +1,18 @@
+Task: T34 reporting jobs and cached reportTypes tool registration
+
+Implemented `src/youtube_mcp/tools/reporting_jobs.py` with four YouTube Reporting API v1 MCP tools:
+- `youtube_reporting_jobs_list`
+- `youtube_reporting_jobs_create` (mutating)
+- `youtube_reporting_jobs_delete` (mutating)
+- `youtube_reporting_reportTypes_list` (24h cached)
+
+Added mocked-discovery unit coverage in `tests/unit/test_tools_reporting_jobs.py` asserting all four tool names are registered, the two jobs mutations are tagged `mutating`, Reporting API request parameters are translated correctly, and `reportTypes.list` avoids duplicate discovery calls on cache hits.
+
+Verification:
+- `lsp_diagnostics src/youtube_mcp/tools/reporting_jobs.py` -> no diagnostics
+- `lsp_diagnostics tests/unit/test_tools_reporting_jobs.py` -> no diagnostics
+- `uv run pytest tests/unit/test_tools_reporting_jobs.py -v` -> 3 passed
+- `uv run ruff check src/youtube_mcp/tools/reporting_jobs.py tests/unit/test_tools_reporting_jobs.py` -> all checks passed
+- `uv run mypy --strict src/youtube_mcp/tools/reporting_jobs.py` -> success, no issues found
+- `rg "videos\\.delete|videos_delete" src tests` guarded for no-match exit -> 0 matches
+- `uv build --out-dir /var/folders/fs/s4w_v3qd3px0gg4qlt25wrbc0000gn/T/opencode/youtube-mcp-build-t34` -> sdist and wheel built

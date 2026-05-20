@@ -1,0 +1,497 @@
+Phase 9 guarded mutating sweep, cheapest first, 500-unit floor
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7408/10000
+
+===== NEXT test_abuse_reports_insert_destructive_only estimate=0 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_abuse_reports_insert_destructive_only SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 0.09s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7408/10000
+===== DONE test_abuse_reports_insert_destructive_only rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7408/10000
+
+===== NEXT test_videos_rate_like_then_none estimate=100 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_videos_rate_like_then_none PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 0.88s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+===== DONE test_videos_rate_like_then_none rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+
+===== NEXT test_subscriptions_subscribe_unsubscribe estimate=120 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_subscriptions_subscribe_unsubscribe SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 0.45s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+===== DONE test_subscriptions_subscribe_unsubscribe rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+
+===== NEXT test_live_broadcasts_insert_update_delete estimate=50 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_live_broadcasts_insert_update_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 0.54s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+===== DONE test_live_broadcasts_insert_update_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+
+===== NEXT test_live_streams_insert_delete estimate=50 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_live_streams_insert_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 0.45s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+===== DONE test_live_streams_insert_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7508/10000
+
+===== NEXT test_channel_banners_insert estimate=60 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_channel_banners_insert PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 1.40s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7559/10000
+===== DONE test_channel_banners_insert rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7559/10000
+
+===== NEXT test_watermarks_set_unset estimate=110 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_watermarks_set_unset FAILED [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_watermarks_set_unset ___________________________
+tests/live/test_acid_mutating_jsigvardt.py:702: in test_watermarks_set_unset
+    _ = _response(
+tests/live/test_acid_mutating_jsigvardt.py:187: in _response
+    pytest.fail(f"Google API returned MCP error: {error}")
+E   Failed: Google API returned MCP error: {'status': 400, 'reason': 'badRequest', 'message': 'Request contains an invalid argument.'}
+
+During handling of the above exception, another exception occurred:
+tests/live/test_acid_mutating_jsigvardt.py:714: in test_watermarks_set_unset
+    _ = _response(
+tests/live/test_acid_mutating_jsigvardt.py:187: in _response
+    pytest.fail(f"Google API returned MCP error: {error}")
+E   Failed: Google API returned MCP error: {'status': 404, 'reason': 'notFound', 'message': 'Requested entity was not found.'}
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/live/test_acid_mutating_jsigvardt.py::test_watermarks_set_unset
+========================= 1 failed, 1 warning in 2.26s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7560/10000
+===== DONE test_watermarks_set_unset rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7560/10000
+
+===== NEXT test_analytics_groups_insert_add_remove_delete estimate=220 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_analytics_groups_insert_add_remove_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 0.81s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7562/10000
+===== DONE test_analytics_groups_insert_add_remove_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7562/10000
+
+===== NEXT test_channels_update_keywords_then_revert estimate=110 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_channels_update_keywords_then_revert PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 2.71s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7663/10000
+===== DONE test_channels_update_keywords_then_revert rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7663/10000
+
+===== NEXT test_playlists_create_update_delete estimate=170 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_playlists_create_update_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 1.68s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7764/10000
+===== DONE test_playlists_create_update_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7764/10000
+
+===== NEXT test_playlist_items_insert_delete estimate=220 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_playlist_items_insert_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 2.44s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7965/10000
+===== DONE test_playlist_items_insert_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7965/10000
+
+===== NEXT test_comment_threads_insert_then_comment_delete estimate=160 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_comment_threads_insert_then_comment_delete PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 1.78s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8065/10000
+===== DONE test_comment_threads_insert_then_comment_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8065/10000
+
+===== NEXT test_comments_insert_update_delete estimate=270 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_comments_insert_update_delete PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 5.56s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8317/10000
+===== DONE test_comments_insert_update_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8317/10000
+
+===== NEXT test_channel_sections_insert_update_delete estimate=270 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_channel_sections_insert_update_delete SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 2.06s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8417/10000
+===== DONE test_channel_sections_insert_update_delete rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8417/10000
+
+===== NEXT test_thumbnails_set_then_revert estimate=120 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_thumbnails_set_then_revert SKIPPED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 skipped, 1 warning in 49.81s ========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8419/10000
+===== DONE test_thumbnails_set_then_revert rc= remaining_after=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	8419/10000
+
+===== NEXT test_videos_insert_update_keeps_uploaded_video_for_manual_cleanup estimate=1700 remaining_before=10000 =====
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/user/Repositories/youtube-mcp
+configfile: pyproject.toml
+plugins: cov-7.1.0, vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/live/test_acid_mutating_jsigvardt.py::test_videos_insert_update_keeps_uploaded_video_for_manual_cleanup PASSED [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /Users/user/Repositories/youtube-mcp/.venv/lib/python3.11/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 1 passed, 1 warning in 3.62s =========================
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	10069/10000
+===== DONE test_videos_insert_update_keeps_uploaded_video_for_manual_cleanup rc= remaining_after=10000 =====

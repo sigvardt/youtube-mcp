@@ -1,0 +1,22 @@
+Task T28 livestream tools registered by import-time decorators.
+Module: src/youtube_mcp/tools/livestream.py
+Unit test: tests/unit/test_tools_livestream.py
+Registered tool names:
+- youtube_liveBroadcasts_list
+- youtube_liveBroadcasts_insert
+- youtube_liveBroadcasts_update
+- youtube_liveBroadcasts_delete
+- youtube_liveBroadcasts_bind
+- youtube_liveBroadcasts_transition
+- youtube_liveBroadcasts_cuepoint
+- youtube_liveStreams_list
+- youtube_liveStreams_insert
+- youtube_liveStreams_update
+- youtube_liveStreams_delete
+
+Verification:
+- lsp diagnostics: clean for source and test files
+- uv run pytest tests/unit/test_tools_livestream.py -v: 3 passed
+- uv run ruff check source/test livestream files: passed
+- uv run mypy --strict src/youtube_mcp/tools/livestream.py: passed
+- forbidden video-removal spelling check under src and tests: zero matches

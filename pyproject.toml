@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "youtube-mcp"
+version = "0.0.1"
+description = "MCP server for YouTube workflows"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "fastmcp>=2.0",
+  "google-api-python-client",
+  "google-auth",
+  "google-auth-oauthlib",
+  "google-auth-httplib2",
+  "keyring",
+  "tenacity",
+  "pydantic>=2",
+  "httpx",
+  "typer",
+]
+
+[project.scripts]
+youtube-mcp = "youtube_mcp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/youtube_mcp"]
+
+[tool.uv]
+dev-dependencies = [
+  "pytest",
+  "pytest-asyncio",
+  "pytest-vcr",
+  "respx",
+  "ruff",
+  "mypy",
+  "pyright",
+  "pytest-cov>=7.1.0",
+]
+
+[tool.pytest.ini_options]
+markers = [
+  "live: tests that call live YouTube APIs and require RUN_LIVE_TESTS=1",
+  "mutating: tests that mutate live YouTube API state",
+]
+
+[tool.coverage.run]
+source = ["src/youtube_mcp"]
+
+[tool.coverage.report]
+fail_under = 85

@@ -1,0 +1,3 @@
+Command: grep -rn "videos\.delete\|videos_delete" src/ tests/
+
+Output: ZERO_MATCHES

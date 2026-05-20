@@ -1,0 +1,22 @@
+Task T16: channels, channelBanners, and thirdPartyLinks tools registered
+Date: 2026-05-19
+
+Implemented tools:
+- youtube_channels_list: method=youtube.channels.list, READONLY, cost=1
+- youtube_channels_update: method=youtube.channels.update, mutating, cost=50
+- youtube_channel_banners_insert: method=youtube.channelBanners.insert, mutating, cost=50, MediaFileUpload
+- youtube_third_party_links_list: method=youtube.thirdPartyLinks.list, READONLY, cost=1
+- youtube_third_party_links_insert: method=youtube.thirdPartyLinks.insert, mutating, cost=50
+- youtube_third_party_links_update: method=youtube.thirdPartyLinks.update, mutating, cost=50
+- youtube_third_party_links_delete: method=youtube.thirdPartyLinks.delete, mutating, cost=50; removes only the external-account link record
+
+Verification run:
+- lsp_diagnostics src/youtube_mcp/tools/channels.py: no diagnostics
+- lsp_diagnostics tests/unit/test_tools_channels.py: no diagnostics
+- uv run pytest tests/unit/test_tools_channels.py -v: 5 passed
+- uv run ruff check src/youtube_mcp/tools/channels.py tests/unit/test_tools_channels.py: all checks passed
+- uv run mypy --strict src/youtube_mcp/tools/channels.py: success, no issues found
+- rg -n forbidden video-removal method patterns in created source/test files: no matches
+- uv build --out-dir /var/folders/fs/s4w_v3qd3px0gg4qlt25wrbc0000gn/T/opencode/youtube-mcp-t16-build: built sdist and wheel
+
+Note: The plan checkbox was intentionally not edited by this worker because the handoff marks plan files read-only for task executors.

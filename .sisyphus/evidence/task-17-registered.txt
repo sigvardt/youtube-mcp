@@ -1,0 +1,32 @@
+Task T17 channelSections registration evidence
+Date: 2026-05-19
+
+Implemented module:
+- src/youtube_mcp/tools/channel_sections.py
+
+Registered MCP tool names asserted by tests/unit/test_tools_channel_sections.py:
+- youtube_channelSections_list
+- youtube_channelSections_insert
+- youtube_channelSections_update
+- youtube_channelSections_delete
+
+Decorator metadata:
+- youtube.channelSections.list uses YouTubeScope.READONLY, cost=1
+- youtube.channelSections.insert uses YouTubeScope.FORCE_SSL, cost=50, mutating=True
+- youtube.channelSections.update uses YouTubeScope.FORCE_SSL, cost=50, mutating=True
+- youtube.channelSections.delete uses YouTubeScope.FORCE_SSL, cost=50, mutating=True
+
+Verification commands to rerun:
+- uv run pytest tests/unit/test_tools_channel_sections.py -v
+- uv run ruff check src/youtube_mcp/tools/channel_sections.py tests/unit/test_tools_channel_sections.py
+- uv run mypy --strict src/youtube_mcp/tools/channel_sections.py
+- forbidden video-deletion safety grep against the source and test files
+
+Verification observed on 2026-05-19:
+- lsp_diagnostics: no diagnostics in src/youtube_mcp/tools/channel_sections.py
+- lsp_diagnostics: no diagnostics in tests/unit/test_tools_channel_sections.py
+- uv run pytest tests/unit/test_tools_channel_sections.py -v: 5 passed
+- uv run ruff check src/youtube_mcp/tools/channel_sections.py tests/unit/test_tools_channel_sections.py: All checks passed
+- uv run mypy --strict src/youtube_mcp/tools/channel_sections.py: Success, no issues found
+- forbidden video-deletion safety grep against the source and test files: no output, zero matches
+- uv run python driver imported channel_sections, configured a fake FrameworkContext, called list and delete, and observed quota recording plus mutating guard invocation

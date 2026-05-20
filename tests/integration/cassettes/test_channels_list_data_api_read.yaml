@@ -1,0 +1,20 @@
+interactions:
+- request:
+    body: null
+    headers:
+      authorization:
+      - DUMMY
+    method: GET
+    uri: https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&mine=true&maxResults=5&alt=json
+  response:
+    body:
+      string: '{"kind":"youtube#channelListResponse","etag":"etag-test-channels","pageInfo":{"totalResults":1,"resultsPerPage":5},"items":[{"kind":"youtube#channel","etag":"etag-test-channel","id":"UC_TEST_CHANNEL_001","snippet":{"title":"Synthetic Test Channel","description":"Offline recorded fixture channel","customUrl":"@synthetic-test-channel","publishedAt":"2026-05-01T00:00:00Z"},"contentDetails":{"relatedPlaylists":{"likes":"","uploads":"UU_TEST_UPLOADS_001"}},"statistics":{"viewCount":"12345","subscriberCount":"678","hiddenSubscriberCount":false,"videoCount":"9"}}]}'
+    headers:
+      content-type:
+      - application/json; charset=UTF-8
+      date:
+      - Tue, 19 May 2026 00:00:00 GMT
+    status:
+      code: 200
+      message: OK
+version: 1

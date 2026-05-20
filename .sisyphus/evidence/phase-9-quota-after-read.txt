@@ -1,0 +1,4 @@
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+Configured accounts: 1
+key	handle	channel_id	scopes	token	quota
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator	expired until 2026-05-20T10:41:38+00:00	7408/10000

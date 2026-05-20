@@ -1,0 +1,10 @@
+Task T42 doctor smoke - 2026-05-19
+
+Command run:
+- uv run youtube-mcp doctor
+
+Result:
+- Exit 0.
+- Output: No accounts configured.
+
+Live per-account doctor probing was not run because this local environment has no configured accounts or live OAuth token setup.

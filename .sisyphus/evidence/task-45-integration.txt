@@ -1,0 +1,16 @@
+Command: uv run pytest tests/integration -v
+
+Result: PASS
+
+Output excerpt:
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0 -- /Users/user/Repositories/youtube-mcp/.venv/bin/python
+plugins: vcr-1.0.2, asyncio-1.3.0, respx-0.23.1, anyio-4.13.0
+collected 4 items
+
+tests/integration/test_analytics_reports_query_integration.py::test_analytics_reports_query_analytics_api PASSED [ 25%]
+tests/integration/test_reporting_jobs_list_integration.py::test_reporting_jobs_list_reporting_api PASSED [ 50%]
+tests/integration/test_youtube_channels_list_integration.py::test_channels_list_data_api_read PASSED [ 75%]
+tests/integration/test_youtube_videos_update_integration.py::test_videos_update_data_api_mutating_recorded PASSED [100%]
+
+========================= 4 passed, 1 warning in 0.06s =========================

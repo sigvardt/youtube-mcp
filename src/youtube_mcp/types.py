@@ -1,5 +1,7 @@
 """Type definitions for youtube_mcp."""
 
+# pyright: reportUnannotatedClassAttribute=false
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -15,6 +17,9 @@ class YouTubeScope(str, Enum):  # noqa: UP042
     MANAGE = "https://www.googleapis.com/auth/youtube"
     UPLOAD = "https://www.googleapis.com/auth/youtube.upload"
     PARTNER = "https://www.googleapis.com/auth/youtubepartner"
+    CHANNEL_MEMBERSHIPS_CREATOR = (
+        "https://www.googleapis.com/auth/youtube.channel-memberships.creator"
+    )
     FORCE_SSL = "https://www.googleapis.com/auth/youtube.force-ssl"
     ANALYTICS_READONLY = "https://www.googleapis.com/auth/yt-analytics.readonly"
     ANALYTICS_MONETARY = "https://www.googleapis.com/auth/yt-analytics-monetary.readonly"

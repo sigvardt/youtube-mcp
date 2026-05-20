@@ -10,7 +10,7 @@ import socket
 
 import pytest
 from googleapiclient.errors import HttpError
-from httplib2 import Response, ServerNotFoundError
+from httplib2 import Response, ServerNotFoundError  # type: ignore[import-untyped]
 
 from youtube_mcp.types import RetryPolicy
 from youtube_mcp.utils.retry import is_retryable_http_error, retry_with_backoff

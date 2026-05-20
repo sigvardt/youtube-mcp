@@ -1,0 +1,17 @@
+Task T26 video assets registration evidence
+Date: 2026-05-19
+
+Registered tools implemented in src/youtube_mcp/tools/video_assets.py:
+- youtube_thumbnails_set: method youtube.thumbnails.set, scope FORCE_SSL, cost 50, mutating=True, MediaFileUpload(resumable=True)
+- youtube_watermarks_set: method youtube.watermarks.set, scope FORCE_SSL, cost 50, mutating=True, MediaFileUpload(resumable=True)
+- youtube_watermarks_unset: method youtube.watermarks.unset, scope FORCE_SSL, cost 50, mutating=True, no media upload
+
+Verification:
+- lsp_diagnostics: clean for src/youtube_mcp/tools/video_assets.py and tests/unit/test_tools_video_assets.py
+- uv run pytest tests/unit/test_tools_video_assets.py -v: 4 passed
+- uv run ruff check src/youtube_mcp/tools/video_assets.py tests/unit/test_tools_video_assets.py: All checks passed
+- uv run mypy --strict src/youtube_mcp/tools/video_assets.py: Success, no issues
+- uv build: successfully built sdist and wheel
+- /opt/homebrew/bin/rg -n 'videos\.delete|videos_delete' src/youtube_mcp/tools/video_assets.py tests/unit/test_tools_video_assets.py: no matches
+
+Plan note: .sisyphus/plans/youtube-mcp.md was not modified because Work_Context marks plan files read-only for executors.

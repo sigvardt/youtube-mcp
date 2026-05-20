@@ -1,0 +1,25 @@
+Task T23 search tool registration evidence
+
+Implemented:
+- src/youtube_mcp/tools/search.py
+- tests/unit/test_tools_search.py
+
+Tool metadata verified by unit test:
+- name: youtube_search_list
+- method: youtube.search.list
+- scopes: https://www.googleapis.com/auth/youtube.readonly
+- cost: 100
+- ctx excluded from FastMCP input schema
+
+Verification completed 2026-05-19:
+- lsp_diagnostics src/youtube_mcp/tools/search.py: no diagnostics
+- lsp_diagnostics tests/unit/test_tools_search.py: no diagnostics
+- uv run pytest tests/unit/test_tools_search.py -v: 3 passed
+- uv run ruff check src/youtube_mcp/tools/search.py tests/unit/test_tools_search.py: all checks passed
+- uv run mypy --strict src/youtube_mcp/tools/search.py: success, no issues found
+- uv run python -c <manual fake-discovery driver>: preflight primary 100; search().list(part="snippet", q="test", maxResults=1); record primary 100; returned youtube#video item
+- uv build --out-dir /var/folders/fs/s4w_v3qd3px0gg4qlt25wrbc0000gn/T/opencode/youtube-mcp-t23-build: built sdist and wheel successfully
+- forbidden video-deletion string grep in created files: 0 matches
+
+Plan file note:
+- .sisyphus/plans/youtube-mcp.md was not modified because executor Work_Context marks plan files read-only.

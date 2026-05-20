@@ -1,0 +1,28 @@
+Task T6 Account Manager Evidence
+Date: 2026-05-19
+
+Command: uv run pytest tests/unit/test_accounts.py -v
+Result: PASS
+
+Pytest summary:
+- collected 8 items
+- tests/unit/test_accounts.py::test_config_store_uses_xdg_path_and_secure_permissions PASSED
+- tests/unit/test_accounts.py::test_add_discover_list PASSED
+- tests/unit/test_accounts.py::test_add_handles_empty_channel_discovery PASSED
+- tests/unit/test_accounts.py::test_unknown_account_raises PASSED
+- tests/unit/test_accounts.py::test_get_credentials_refreshes_and_persists PASSED
+- tests/unit/test_accounts.py::test_concurrent_refresh_dedup PASSED
+- tests/unit/test_accounts.py::test_service_builders_cache_per_account_and_api PASSED
+- tests/unit/test_accounts.py::test_remove_deletes_token_config_and_cached_service PASSED
+- 8 passed in 0.24s
+
+Additional verification:
+- lsp_diagnostics on src/youtube_mcp/auth/accounts.py: no diagnostics found
+- lsp_diagnostics on tests/unit/test_accounts.py: no diagnostics found
+- uv run ruff check src/youtube_mcp/auth/accounts.py tests/unit/test_accounts.py: all checks passed
+- uv run mypy --strict src/youtube_mcp/auth/accounts.py: success, no issues found
+- uv run mypy --strict src/youtube_mcp/: success, no issues found in 16 source files
+- import smoke: from youtube_mcp.auth.accounts import AccountManager, AccountConfigStore, AccountNotFoundError
+
+Repository-wide ruff note:
+- uv run ruff check src/ tests/ still fails on pre-existing files outside the T6 allowed edit scope: src/youtube_mcp/tools/_framework.py and tests/unit/test_framework.py.

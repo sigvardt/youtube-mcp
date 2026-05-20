@@ -1,0 +1,26 @@
+Task T29 live chat tool registration evidence
+Date: 2026-05-19
+
+Command:
+uv run pytest tests/unit/test_tools_live_chat.py -v
+
+Result:
+2 passed, 1 warning in 0.68s
+
+Registered tool names asserted by tests/unit/test_tools_live_chat.py::test_registered:
+- youtube_liveChatMessages_list
+- youtube_liveChatMessages_insert
+- youtube_liveChatMessages_delete
+- youtube_liveChatModerators_list
+- youtube_liveChatModerators_insert
+- youtube_liveChatModerators_delete
+- youtube_liveChatBans_insert
+- youtube_liveChatBans_delete
+
+Additional verification completed:
+- lsp_diagnostics clean for src/youtube_mcp/tools/live_chat.py
+- lsp_diagnostics clean for tests/unit/test_tools_live_chat.py
+- uv run ruff check src/youtube_mcp/tools/live_chat.py tests/unit/test_tools_live_chat.py: passed
+- uv run mypy --strict src/youtube_mcp/tools/live_chat.py: passed
+- ! rg -n 'videos\.delete|videos_delete' src tests: passed with no matches
+- uv build: passed

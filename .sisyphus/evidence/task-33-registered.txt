@@ -1,0 +1,17 @@
+Task T33 registration evidence
+Date: 2026-05-19
+
+Command:
+uv run pytest tests/unit/test_tools_analytics_groups.py -v
+
+Result:
+3 passed, 1 warning in 0.70s
+
+Registered Analytics groups tools asserted by tests:
+- youtube_analytics_groups_list
+- youtube_analytics_groups_insert
+- youtube_analytics_groups_update
+- youtube_analytics_groups_delete
+- youtube_analytics_groupItems_list
+- youtube_analytics_groupItems_insert
+- youtube_analytics_groupItems_delete

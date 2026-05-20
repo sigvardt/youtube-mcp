@@ -1,0 +1,29 @@
+Task T12 - Tool Registration Framework Evidence
+Date: 2026-05-19
+
+Implemented files:
+- src/youtube_mcp/tools/_framework.py
+- tests/unit/test_framework.py
+
+Key behavior covered:
+- @youtube_tool decorator registers wrapped functions with youtube_mcp.server.mcp at import/decorate time.
+- FrameworkContext/configure_framework provide dependency injection for account manager, quota tracker, mutating guard, and retry policy.
+- Account credentials are resolved, quota is preflighted, mutating guard runs before service/API call, the per-API service is built, retry wraps the inner call, HttpError maps to a structured token-free error dict, and quota records only on success.
+- method == "youtube.videos.delete" is rejected at decoration time by ToolRegistrationError.
+- FastMCP registration was verified through async mcp.list_tools(); generated schema excludes ctx and mutating tools carry tags={"mutating"}.
+
+Verification commands and results:
+- lsp_diagnostics src/youtube_mcp/tools/_framework.py severity=error -> No diagnostics found
+- lsp_diagnostics tests/unit/test_framework.py severity=error -> No diagnostics found
+- uv run pytest tests/unit/test_framework.py -v -> 9 passed, 1 third-party deprecation warning
+- uv run ruff check src/ tests/ -> All checks passed
+- uv run mypy --strict src/youtube_mcp/ -> Success: no issues found in 16 source files
+- grep -rn "videos.delete\|videos_delete" src/ tests/ -> only framework guard plus test_framework exclusion test matches:
+  - src/youtube_mcp/tools/_framework.py:263: if method == "youtube.videos.delete":
+  - tests/unit/test_framework.py:138: def test_videos_delete_blocked() -> None:
+  - tests/unit/test_framework.py:143: method="youtube.videos.delete",
+- Manual registration smoke via uv run python -> mcp.list_tools() contained youtube_framework_manual_smoke and direct invocation returned {'account': 'primary', 'id': 'abc'}
+
+Notes:
+- uv emitted the known non-blocking deprecation warning for [tool.uv].dev-dependencies.
+- pytest emitted one third-party opentelemetry DeprecationWarning unrelated to this task.

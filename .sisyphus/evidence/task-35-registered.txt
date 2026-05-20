@@ -1,0 +1,25 @@
+Task T35 registered tools:
+- youtube_reporting_reports_list
+- youtube_reporting_reports_get
+- youtube_reporting_reports_download
+
+Implementation:
+- Source: src/youtube_mcp/tools/reporting_reports.py
+- Tests: tests/unit/test_tools_reporting_reports.py
+- Decorator API: reporting
+- Method metadata:
+  - youtubeReporting.reports.list
+  - youtubeReporting.reports.get
+  - youtubeReporting.reports.download
+- Scope: https://www.googleapis.com/auth/yt-analytics.readonly
+
+Verification:
+- lsp_diagnostics src/youtube_mcp/tools/reporting_reports.py: no diagnostics
+- lsp_diagnostics tests/unit/test_tools_reporting_reports.py: no diagnostics
+- uv run pytest tests/unit/test_tools_reporting_reports.py -v: 4 passed
+- uv run ruff check src/youtube_mcp/tools/reporting_reports.py tests/unit/test_tools_reporting_reports.py: passed
+- uv run mypy --strict src/youtube_mcp/tools/reporting_reports.py: passed
+- rtk grep -n "videos\.delete|videos_delete" src tests: 0 matches
+- uv build: built sdist and wheel successfully
+
+Note: The plan checkbox was not modified by this executor because Work_Context marks .sisyphus/plans/*.md read-only.

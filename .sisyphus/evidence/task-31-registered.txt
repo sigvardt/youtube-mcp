@@ -1,0 +1,15 @@
+Task T31 misc tools registered
+Date: 2026-05-19
+
+Implemented tools:
+- youtube_abuseReports_insert -> youtube.abuseReports.insert, scope youtube.force-ssl, cost 50, mutating
+- youtube_tests_insert -> youtube.tests.insert, scope youtube.readonly, cost 0, non-mutating auth probe
+
+Verification:
+- lsp_diagnostics src/youtube_mcp/tools/misc.py: no diagnostics
+- lsp_diagnostics tests/unit/test_tools_misc.py: no diagnostics
+- uv run pytest tests/unit/test_tools_misc.py -v: 2 passed
+- uv run ruff check src/youtube_mcp/tools/misc.py tests/unit/test_tools_misc.py: passed
+- uv run mypy --strict src/youtube_mcp/tools/misc.py: success
+- rg -n "videos\.delete|videos_delete" src tests: zero matches
+- uv build --out-dir /var/folders/fs/s4w_v3qd3px0gg4qlt25wrbc0000gn/T/opencode/youtube-mcp-build-t31: success

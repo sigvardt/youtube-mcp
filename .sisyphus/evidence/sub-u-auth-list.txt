@@ -1,0 +1,5 @@
+warning: The `tool.uv.dev-dependencies` field (used in `pyproject.toml`) is deprecated and will be removed in a future release; use `dependency-groups.dev` instead
+key	handle	channel_id	scopes
+jsigvardt	@jsigvardt	UCvTRR-gKfkSwnXTkxg3w2Nw	force_ssl,analytics_readonly,analytics_monetary,channel_memberships_creator
+power-1	@powerdanmark	UCFAas6-aw9AhzodpD1mbyvQ	force_ssl,analytics_readonly
+power-2	@powernorge	UCgVywZ90aWpkReo0kfw5o2Q	force_ssl,analytics_readonly
