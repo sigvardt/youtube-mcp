@@ -48,6 +48,27 @@ def test_accounts_resource_returns_empty_list_by_default(
     assert server.accounts_resource() == []
 
 
+def test_configure_account_provider_updates_resources(monkeypatch: pytest.MonkeyPatch) -> None:
+    def empty_account_provider() -> list[server.AccountResource]:
+        return []
+
+    monkeypatch.setattr(server, "_account_provider", empty_account_provider)
+
+    server.configure_account_provider(
+        lambda: [
+            {
+                "key": "primary",
+                "channel_handle": "@example",
+                "channel_id": "UC123",
+                "scopes": ["https://www.googleapis.com/auth/youtube.readonly"],
+            }
+        ]
+    )
+
+    assert server.accounts_resource()[0]["key"] == "primary"
+    assert server.status_resource()["configured_accounts"] == 1
+
+
 def test_quota_resource_returns_json_serializable_state(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,

@@ -32,9 +32,14 @@ logger = logging.getLogger("youtube_mcp.server")
 
 mcp: FastMCP = FastMCP(name="youtube-mcp", version=__version__)
 
-# TODO(T6): wire to AccountManager once available.
 _account_provider: AccountProvider = lambda: []  # noqa: E731
 _current_transport: str | None = None
+
+
+def configure_account_provider(provider: AccountProvider) -> None:
+    global _account_provider
+
+    _account_provider = provider
 
 
 def _configure_logging() -> None:

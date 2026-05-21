@@ -3,13 +3,14 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import NoReturn, cast
 
 import pytest
 import typer
 from typer.testing import CliRunner
 
-from youtube_mcp import cli
+from youtube_mcp import cli, server
 from youtube_mcp.auth.accounts import AccountManager
 from youtube_mcp.auth.token_store import TokenStore
 from youtube_mcp.types import AccountConfig, YouTubeScope
@@ -32,10 +33,18 @@ def make_account() -> AccountConfig:
 class FakeCliManager:
     accounts: list[AccountConfig]
     remove_calls: list[str]
+    config_path: Path
+    public_api_key_configured: bool
 
-    def __init__(self, accounts: list[AccountConfig] | None = None) -> None:
-        self.accounts = accounts or [make_account()]
+    def __init__(
+        self,
+        accounts: list[AccountConfig] | None = None,
+        public_api_key_configured: bool = False,
+    ) -> None:
+        self.accounts = [make_account()] if accounts is None else accounts
         self.remove_calls = []
+        self.config_path = Path("/tmp/youtube-mcp/accounts.json")
+        self.public_api_key_configured = public_api_key_configured
 
     def list(self) -> list[AccountConfig]:
         return self.accounts
@@ -128,6 +137,73 @@ def test_tools_list_prints_registered_tools(monkeypatch: pytest.MonkeyPatch) -> 
     assert "youtube_abuseReports_insert" in result.output
     assert "youtube.abuseReports.insert" in result.output
     assert "Submit an abuse report." in result.output
+
+
+def test_serve_configures_framework_resources_before_running(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manager = FakeCliManager()
+    serve_calls: list[dict[str, object]] = []
+
+    def empty_account_provider() -> list[server.AccountResource]:
+        return []
+
+    monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
+    monkeypatch.setattr(server, "_account_provider", empty_account_provider)
+
+    def fake_serve_server(**kwargs: object) -> None:
+        serve_calls.append(kwargs)
+        assert server.accounts_resource() == [
+            {
+                "key": "primary",
+                "channel_handle": "@primary",
+                "channel_id": "UC123",
+                "scopes": [YouTubeScope.READONLY.value],
+            }
+        ]
+        assert server.status_resource()["configured_accounts"] == 1
+
+    monkeypatch.setattr(cli, "serve_server", fake_serve_server)
+
+    result = runner.invoke(cli.app, ["serve"])
+
+    assert result.exit_code == 0
+    assert serve_calls == [{"transport": "stdio", "host": "127.0.0.1", "port": 8765}]
+    assert "account_config=/tmp/youtube-mcp/accounts.json" in result.output
+    assert "configured_accounts=1" in result.output
+
+
+def test_serve_skips_auth_wizard_when_public_api_key_is_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manager = FakeCliManager(accounts=[], public_api_key_configured=True)
+    wizard_calls: list[object] = []
+    serve_calls: list[dict[str, object]] = []
+
+    def empty_account_provider() -> list[server.AccountResource]:
+        return []
+
+    monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
+    monkeypatch.setattr(server, "_account_provider", empty_account_provider)
+
+    def fake_run_wizard(**kwargs: object) -> bool:
+        wizard_calls.append(kwargs)
+        return False
+
+    def fake_serve_server(**kwargs: object) -> None:
+        serve_calls.append(kwargs)
+        assert server.status_resource()["configured_accounts"] == 0
+
+    monkeypatch.setattr(cli, "run_wizard", fake_run_wizard)
+    monkeypatch.setattr(cli, "serve_server", fake_serve_server)
+
+    result = runner.invoke(cli.app, ["serve"])
+
+    assert result.exit_code == 0
+    assert wizard_calls == []
+    assert serve_calls == [{"transport": "stdio", "host": "127.0.0.1", "port": 8765}]
+    assert "configured_accounts=0" in result.output
+    assert "public_api_key=configured" in result.output
 
 
 def test_auth_remove_requires_confirmation_and_yes_bypasses(

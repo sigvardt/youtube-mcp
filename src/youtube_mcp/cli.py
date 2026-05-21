@@ -19,7 +19,7 @@ from youtube_mcp.auth.accounts import AccountConfigStore, AccountManager, Accoun
 from youtube_mcp.auth.oauth_flow import refresh_credentials
 from youtube_mcp.auth.token_store import TokenStore, make_token_store
 from youtube_mcp.auth.wizard import run_wizard
-from youtube_mcp.server import mcp
+from youtube_mcp.server import AccountResource, configure_account_provider, mcp
 from youtube_mcp.server import serve as serve_server
 from youtube_mcp.tools._framework import FrameworkContext, configure_framework
 from youtube_mcp.tools.channels import youtube_channels_list
@@ -99,6 +99,10 @@ def _scope_summary(scopes: Sequence[YouTubeScope | str]) -> str:
     return ",".join(names) if names else "-"
 
 
+def _scope_values(scopes: Sequence[YouTubeScope | str]) -> list[str]:
+    return [scope.value if isinstance(scope, YouTubeScope) else scope for scope in scopes]
+
+
 def _account_label(account: AccountConfig) -> str:
     handle = account.channel_handle or "-"
     channel_id = account.channel_id or "-"
@@ -124,6 +128,32 @@ def _configure_tool_framework(runtime: Runtime) -> None:
             account_manager=runtime.manager,
             quota_tracker=runtime.quota_tracker,
         )
+    )
+    configure_account_provider(lambda: _account_resources(runtime.manager.list()))
+
+
+def _account_resources(accounts: Sequence[AccountConfig]) -> list[AccountResource]:
+    return [
+        {
+            "key": account.key,
+            "channel_handle": account.channel_handle,
+            "channel_id": account.channel_id,
+            "scopes": _scope_values(account.oauth_scopes),
+        }
+        for account in accounts
+    ]
+
+
+def _log_startup_context(runtime: Runtime) -> None:
+    api_key_status = "configured" if runtime.manager.public_api_key_configured else "not configured"
+    message = (
+        f"youtube-mcp: account_config={runtime.manager.config_path}; "
+        + f"configured_accounts={len(runtime.manager.list())}; "
+        + f"public_api_key={api_key_status}"
+    )
+    typer.echo(
+        message,
+        err=True,
     )
 
 
@@ -196,8 +226,14 @@ def serve(
     """Run the MCP server."""
 
     runtime = _runtime()
-    if not runtime.manager.list() and not run_wizard(manager=runtime.manager):
+    if (
+        not runtime.manager.list()
+        and not runtime.manager.public_api_key_configured
+        and not run_wizard(manager=runtime.manager)
+    ):
         raise typer.Exit(code=1)
+    _configure_tool_framework(runtime)
+    _log_startup_context(runtime)
     serve_server(transport=transport, host=host, port=port)
 
 
