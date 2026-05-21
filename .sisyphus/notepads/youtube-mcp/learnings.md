@@ -908,3 +908,8 @@ Must Have [12/12] | Must NOT Have [8/8] | Tasks [48/48] | videos.delete grep [CL
 - Fix pattern: configure the framework from `cli.serve()` before the blocking server run, and wire `server.configure_account_provider(...)` at the same point so `youtube://accounts` and `youtube://status` reflect the runtime account config.
 - Public Data API fallback: `AccountManager` treats account key `default` as an API-key account only when no OAuth account named `default` exists and `YOUTUBE_MCP_API_KEY` or `YOUTUBE_API_KEY` is set. It builds `youtube/v3` with `developerKey=` and rejects Analytics or Reporting with a specific OAuth-required error.
 - Verification: fake CLI serve MCP dispatch reached `youtube_i18nLanguages_list` through `FastMCP.call_tool`, quota preflight and record ran, and resources returned the fake account. A no-account API-key runtime skipped the wizard and returned i18n languages via `developerKey`. Missing default config now reports the account/API-key cause instead of framework-unconfigured.
+
+## [2026-05-21] Release automation: version-bump publishing
+
+- The PyPI trusted-publishing workflow originally published only on pushed `v*` tags. Future version bumps now publish from a `main` push that changes release metadata when that version is not already present on PyPI.
+- The workflow still supports manual `v*` tag publishing, but the PyPI existence check makes duplicate tag or rerun events skip publish safely. Main-branch publish jobs create the matching annotated `v<version>` tag after a successful upload for traceability.
