@@ -1,15 +1,80 @@
 name: Publish
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
       - "v*"
+    paths:
+      - "CHANGELOG.md"
+      - "pyproject.toml"
+      - "src/youtube_mcp/__init__.py"
+      - "uv.lock"
 
 permissions:
   contents: read
 
 jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      should_publish: ${{ steps.pypi.outputs.should_publish }}
+      tag_name: ${{ steps.version.outputs.tag_name }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve release version
+        id: version
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          import tomllib
+
+          version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+          init_text = Path("src/youtube_mcp/__init__.py").read_text()
+          changelog_text = Path("CHANGELOG.md").read_text()
+          expected_init = f'__version__ = "{version}"'
+          expected_changelog = f"## [{version}]"
+
+          if expected_init not in init_text:
+              raise SystemExit(f"src/youtube_mcp/__init__.py does not declare {version}")
+          if expected_changelog not in changelog_text:
+              raise SystemExit(f"CHANGELOG.md does not include {expected_changelog}")
+
+          print(f"version={version}")
+          print(f"tag_name=v{version}")
+          PY
+
+      - name: Check PyPI version
+        id: pypi
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          import urllib.error
+          import urllib.request
+
+          version = os.environ["VERSION"]
+          url = f"https://pypi.org/pypi/youtube-complete-mcp/{version}/json"
+
+          try:
+              with urllib.request.urlopen(url, timeout=30):
+                  exists = True
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              exists = False
+
+          print(f"should_publish={'false' if exists else 'true'}")
+          PY
+
   verify:
+    needs: release
+    if: needs.release.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +104,10 @@ jobs:
           fi
 
   build:
-    needs: verify
+    needs:
+      - release
+      - verify
+    if: needs.release.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,7 +128,10 @@ jobs:
           path: dist/
 
   publish:
-    needs: build
+    needs:
+      - release
+      - build
+    if: needs.release.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -75,3 +146,29 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  tag:
+    needs:
+      - release
+      - publish
+    if: github.ref_type == 'branch' && needs.release.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create release tag
+        env:
+          TAG_NAME: ${{ needs.release.outputs.tag_name }}
+          VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/${TAG_NAME}" >/dev/null 2>&1; then
+            echo "${TAG_NAME} already exists"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${TAG_NAME}" -m "Release ${VERSION}"
+          git push origin "${TAG_NAME}"
