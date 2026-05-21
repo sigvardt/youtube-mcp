@@ -16,7 +16,12 @@ from unittest.mock import MagicMock
 import pytest
 
 import youtube_mcp.auth.accounts as accounts_module
-from youtube_mcp.auth.accounts import AccountConfigStore, AccountManager, AccountNotFoundError
+from youtube_mcp.auth.accounts import (
+    AccountConfigStore,
+    AccountManager,
+    AccountNotFoundError,
+    youtube_api_key_from_env,
+)
 from youtube_mcp.auth.oauth_flow import AUTH_URI, TOKEN_URI
 from youtube_mcp.types import AccountConfig, TokenBundle, YouTubeScope
 
@@ -219,6 +224,80 @@ def test_unknown_account_raises(tmp_path: Path) -> None:
 
     with pytest.raises(AccountNotFoundError):
         _ = manager.get("missing")
+
+
+def test_youtube_api_key_from_env_prefers_namespaced_value(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("YOUTUBE_API_KEY", "fallback-key")
+    monkeypatch.setenv("YOUTUBE_MCP_API_KEY", " namespaced-key ")
+
+    assert youtube_api_key_from_env() == "namespaced-key"
+
+
+def test_default_api_key_account_builds_public_youtube_service(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    built_services: list[tuple[str, str, dict[str, object]]] = []
+    public_service = object()
+
+    def fake_build(api_name: str, version: str, **kwargs: object) -> object:
+        built_services.append((api_name, version, kwargs))
+        return public_service
+
+    monkeypatch.setattr(accounts_module, "build", fake_build)
+    manager = AccountManager(
+        AccountConfigStore(tmp_path / "accounts.json"),
+        InMemoryTokenStore(),
+        api_key=" public-key ",
+    )
+
+    credentials = manager.get_credentials("default")
+    youtube_a = manager.get_youtube_service("default")
+    youtube_b = manager.get_youtube_service("default")
+
+    assert credentials is not None
+    assert youtube_a is public_service
+    assert youtube_a is youtube_b
+    assert built_services == [("youtube", "v3", {"developerKey": "public-key"})]
+
+
+def test_default_api_key_account_rejects_non_data_api(tmp_path: Path) -> None:
+    manager = AccountManager(
+        AccountConfigStore(tmp_path / "accounts.json"),
+        InMemoryTokenStore(),
+        api_key="public-key",
+    )
+
+    with pytest.raises(AccountNotFoundError, match="public YouTube Data API calls only"):
+        _ = manager.get_analytics_service("default")
+
+
+def test_configured_default_oauth_account_wins_over_api_key(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(accounts_module, "Credentials", FakeCredentials)
+    config_store = AccountConfigStore(tmp_path / "accounts.json")
+    config_store.save([make_account("default")])
+    token_store = InMemoryTokenStore()
+    token_store.put("default", make_bundle())
+    built_services: list[dict[str, object]] = []
+
+    def fake_build(api_name: str, version: str, **kwargs: object) -> object:
+        _ = api_name, version
+        built_services.append(kwargs)
+        return object()
+
+    monkeypatch.setattr(accounts_module, "build", fake_build)
+    manager = AccountManager(config_store, token_store, api_key="public-key")
+
+    _ = manager.get_youtube_service("default")
+
+    assert len(built_services) == 1
+    assert "credentials" in built_services[0]
+    assert "developerKey" not in built_services[0]
 
 
 def test_get_credentials_refreshes_and_persists(

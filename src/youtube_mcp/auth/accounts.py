@@ -13,7 +13,7 @@ import threading
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Protocol, cast
+from typing import Any, Final, Protocol, cast
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -25,6 +25,21 @@ from youtube_mcp.auth.token_store import TokenStore
 from youtube_mcp.types import AccountConfig, TokenBundle, YouTubeScope
 
 ACCOUNT_CONFIGS_ADAPTER: TypeAdapter[list[AccountConfig]] = TypeAdapter(list[AccountConfig])
+PUBLIC_API_KEY_ACCOUNT: Final = "default"
+YOUTUBE_MCP_API_KEY_ENV: Final = "YOUTUBE_MCP_API_KEY"
+YOUTUBE_API_KEY_ENV: Final = "YOUTUBE_API_KEY"
+_PUBLIC_API_KEY_CREDENTIALS = cast(Credentials, object())
+
+
+def youtube_api_key_from_env() -> str | None:
+    for env_name in (YOUTUBE_MCP_API_KEY_ENV, YOUTUBE_API_KEY_ENV):
+        raw_value = os.environ.get(env_name)
+        if raw_value is None:
+            continue
+        value = raw_value.strip()
+        if value:
+            return value
+    return None
 
 
 class OAuthRunner(Protocol):
@@ -119,16 +134,28 @@ class AccountManager:
         config_store: AccountConfigStore,
         token_store: TokenStore,
         oauth_runner: OAuthRunner | None = None,
+        api_key: str | None = None,
     ) -> None:
         self._config_store = config_store
         self._token_store = token_store
         self._oauth_runner = (
             cast(OAuthRunner, run_oauth_flow) if oauth_runner is None else oauth_runner
         )
+        self._api_key = self._normalize_api_key(
+            youtube_api_key_from_env() if api_key is None else api_key
+        )
         self._refresh_locks: dict[str, threading.Lock] = {}
         self._refresh_locks_lock = threading.Lock()
         self._services: dict[tuple[str, str], Resource] = {}
         self._services_lock = threading.Lock()
+
+    @property
+    def config_path(self) -> Path:
+        return self._config_store.path
+
+    @property
+    def public_api_key_configured(self) -> bool:
+        return self._api_key is not None
 
     def add(
         self,
@@ -164,6 +191,12 @@ class AccountManager:
     def get(self, key: str) -> AccountConfig:
         account = self._config_store.get(key)
         if account is None:
+            if key == PUBLIC_API_KEY_ACCOUNT:
+                message = (
+                    f"Account {key!r} is not configured; set {YOUTUBE_MCP_API_KEY_ENV} for "
+                    + "public YouTube Data API calls or add an OAuth account"
+                )
+                raise AccountNotFoundError(message)
             raise AccountNotFoundError(f"Account {key!r} is not configured")
         return account
 
@@ -173,6 +206,9 @@ class AccountManager:
         self._clear_cached_services(key)
 
     def get_credentials(self, key: str) -> Credentials:
+        if self._is_public_api_key_account(key):
+            return _PUBLIC_API_KEY_CREDENTIALS
+
         account = self.get(key)
         with self._refresh_lock_for(key):
             bundle = self._token_store.get(key)
@@ -196,6 +232,15 @@ class AccountManager:
         return self._get_service(key, "youtubereporting", "v1")
 
     def _get_service(self, key: str, api_name: str, version: str) -> Resource:
+        if self._is_public_api_key_account(key):
+            if api_name != "youtube":
+                message = (
+                    f"Account {key!r} uses an API key for public YouTube Data API calls only; "
+                    + f"{api_name} requires a configured OAuth account"
+                )
+                raise AccountNotFoundError(message)
+            return self._get_public_youtube_service(key)
+
         cache_key = (key, api_name)
         with self._services_lock:
             cached_service = self._services.get(cache_key)
@@ -219,6 +264,32 @@ class AccountManager:
         with self._services_lock:
             self._services[(key, api_name)] = service
 
+    def _get_public_youtube_service(self, key: str) -> Resource:
+        cache_key = (key, "youtube")
+        with self._services_lock:
+            cached_service = self._services.get(cache_key)
+            if cached_service is not None:
+                return cached_service
+
+            api_key = self._api_key
+            if api_key is None:
+                message = (
+                    f"Account {key!r} is not configured; set {YOUTUBE_MCP_API_KEY_ENV} for "
+                    + "public YouTube Data API calls or add an OAuth account"
+                )
+                raise AccountNotFoundError(message)
+
+            service = cast(Resource, build("youtube", "v3", developerKey=api_key))
+            self._services[cache_key] = service
+            return service
+
+    def _is_public_api_key_account(self, key: str) -> bool:
+        return (
+            key == PUBLIC_API_KEY_ACCOUNT
+            and self._api_key is not None
+            and self._config_store.get(key) is None
+        )
+
     def _clear_cached_services(self, key: str) -> None:
         with self._services_lock:
             self._services = {
@@ -234,6 +305,13 @@ class AccountManager:
                 lock = threading.Lock()
                 self._refresh_locks[key] = lock
             return lock
+
+    @staticmethod
+    def _normalize_api_key(api_key: str | None) -> str | None:
+        if api_key is None:
+            return None
+        normalized = api_key.strip()
+        return normalized or None
 
     def _discover_channel(
         self,
