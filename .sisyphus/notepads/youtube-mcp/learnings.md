@@ -1,5 +1,11 @@
 # learnings.md (youtube-mcp)
 
+## [2026-05-21] Doctor auth probe endpoint
+
+- `youtube.tests.insert` is still exposed by old googleapiclient discovery data but the public docs now 404 and live normal-channel tokens receive `insufficientPermissions`. Do not use it for health checks or expose it as an MCP tool.
+- `src/youtube_mcp/cli.py` now uses `youtube_channels_list(account=<key>, part="snippet", mine=True, max_results=1)` for `doctor`; PASS/OK requires a returned channel item whose `id` matches the stored `AccountConfig.channel_id`.
+- The real CLI smoke test on this machine returned `OK` for `jsigvardt`, `power-1`, and `power-2` with `DOCTOR_EXIT:0` after the swap.
+
 ## [2026-05-20] Cascade-error triage: 4 mutating tests resolved
 
 - `test_comments_insert_update_delete`: prior cleanup cascade was an empty successful `comments.delete` response reaching `_response` as a string. Current `youtube_comments_delete` plus framework result normalization returns `{}` for empty Google success bodies, and the guarded live rerun passes.
