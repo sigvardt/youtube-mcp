@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import inspect
+import json
 from collections.abc import Callable
 from types import SimpleNamespace
 from typing import ClassVar, cast
@@ -14,6 +15,8 @@ from unittest.mock import Mock
 
 import pytest
 from fastmcp import Context
+from googleapiclient.errors import HttpError
+from httplib2 import Response  # type: ignore[import-untyped]
 
 import youtube_mcp.tools.videos as videos
 from youtube_mcp.server import mcp
@@ -58,14 +61,18 @@ class FakeQuotaTracker:
 
 class FakeYouTubeRequest:
     response: dict[str, object]
+    error: HttpError | None
     execute_calls: int
 
-    def __init__(self, response: dict[str, object]) -> None:
+    def __init__(self, response: dict[str, object], *, error: HttpError | None = None) -> None:
         self.response = response
+        self.error = error
         self.execute_calls = 0
 
     def execute(self) -> dict[str, object]:
         self.execute_calls += 1
+        if self.error is not None:
+            raise self.error
         return self.response
 
 
@@ -312,6 +319,15 @@ def _retry_policy() -> RetryPolicy:
         multiplier=1.0,
         jitter=False,
     )
+
+
+def _http_error(status: int, body_reason: str, message: str) -> HttpError:
+    response = Response({"status": str(status)})
+    response.reason = "HTTP Error"
+    body = json.dumps(
+        {"error": {"errors": [{"reason": body_reason}], "message": message}}
+    ).encode("utf-8")
+    return HttpError(response, body)
 
 
 def _configure(
@@ -617,6 +633,54 @@ def test_upload_progress(monkeypatch: pytest.MonkeyPatch) -> None:
     }
 
 
+def test_videoTrainability_response_model_accepts_framework_error_envelope() -> None:
+    response = videos.VideoTrainabilityResponse.model_validate(
+        {"error": {"status": 404, "reason": "notFound", "message": "Video not found"}}
+    )
+
+    assert response.error is not None
+    assert response.error.status == 404
+    assert response.error.reason == "notFound"
+    assert response.permitted == []
+    success_dump = videos.VideoTrainabilityResponse().model_dump(mode="json", by_alias=True)
+    assert "error" not in success_dump
+    assert success_dump["permitted"] == []
+
+
+@pytest.mark.asyncio
+async def test_videoTrainability_http_error_matches_registered_output_schema() -> None:
+    manager, tracker = _configure()
+    manager.service.video_trainability_resource.get_request.error = _http_error(
+        404,
+        "notFound",
+        "Video not found",
+    )
+
+    result = await mcp.call_tool(
+        "youtube_videoTrainability_get",
+        {"account": "primary", "id": "video-missing"},
+    )
+
+    assert result.structured_content == {
+        "error": {"status": 404, "reason": "notFound", "message": "Video not found"}
+    }
+    assert tracker.record_calls == []
+
+
+@pytest.mark.asyncio
+async def test_videoTrainability_success_omits_error_from_structured_content() -> None:
+    _manager, _tracker = _configure()
+
+    result = await mcp.call_tool(
+        "youtube_videoTrainability_get",
+        {"account": "primary", "id": "video-123"},
+    )
+
+    assert result.structured_content is not None
+    assert "error" not in result.structured_content
+    assert result.structured_content["videoId"] == "video-123"
+
+
 @pytest.mark.asyncio
 async def test_all_video_tool_names_are_registered_with_fastmcp() -> None:
     _ = _configure()
@@ -675,6 +739,9 @@ async def test_all_video_tool_names_are_registered_with_fastmcp() -> None:
     assert registered["youtube_videos_list"].tags == set()
     assert registered["youtube_videos_getRating"].tags == set()
     assert registered["youtube_videoTrainability_get"].tags == set()
+    output_schema = registered["youtube_videoTrainability_get"].output_schema
+    assert output_schema is not None
+    assert "error" in output_schema["properties"]
     assert registered["youtube_videos_insert"].parameters["required"] == [
         "account",
         "part",
