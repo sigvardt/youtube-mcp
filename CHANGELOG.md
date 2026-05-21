@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-05-21
+
+### Fixed
+
+- Clarify unknown-account errors so agents see configured OAuth keys and understand that `default` is only the public API-key account path.
+
 ## [0.1.2] - 2026-05-21
 
 ### Added
