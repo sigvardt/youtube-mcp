@@ -43,4 +43,4 @@ def test_require_any_scope_accepts_enum_members_and_short_names(
         cast(object, ScopeAccount(key="jsigvardt", oauth_scopes=oauth_scopes)),
     )
 
-    _require_any_scope(account, "youtube_tests_insert", allowed_scopes)
+    _require_any_scope(account, "youtube_channels_list", allowed_scopes)

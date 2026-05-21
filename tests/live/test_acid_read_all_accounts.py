@@ -13,7 +13,6 @@ import pytest
 from tests.live.conftest import SKIPPABLE_PERMISSION_REASONS, LiveFramework
 from youtube_mcp.tools.analytics_reports import youtube_analytics_reports_query
 from youtube_mcp.tools.channels import youtube_channels_list
-from youtube_mcp.tools.misc import youtube_tests_insert
 from youtube_mcp.tools.playlists import youtube_playlists_list
 from youtube_mcp.tools.reporting_jobs import youtube_reporting_reportTypes_list
 from youtube_mcp.tools.subscriptions import youtube_subscriptions_list
@@ -122,22 +121,6 @@ def _analytics_dates() -> tuple[str, str]:
 
 def _call_videos_list_mine(account: AccountConfig) -> object:
     return youtube_videos_list(account=account.key, part="snippet,status", mine=True)
-
-
-@pytest.mark.live
-@pytest.mark.skipif(os.getenv("RUN_LIVE_TESTS") != "1", reason=LIVE_SKIP_REASON)
-def test_tests_insert_auth_probe(live_framework: LiveFramework, account: AccountConfig) -> None:
-    _require_any_scope(account, "youtube_tests_insert", DATA_READ_SCOPES)
-    before_units = _quota_before(live_framework, account)
-
-    response = youtube_tests_insert(
-        account=account.key,
-        part="snippet",
-        test_body={"snippet": {"description": "youtube-mcp live auth probe"}},
-    )
-
-    payload = _finish_call(live_framework, account, "youtube_tests_insert", before_units, response)
-    _assert_has_keys(payload, "id")
 
 
 @pytest.mark.live

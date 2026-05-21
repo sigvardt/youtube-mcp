@@ -1,11 +1,10 @@
 """Doctor command exit-code regression tests."""
-# pyright: reportMissingTypeStubs=false, reportAny=false, reportUnknownMemberType=false
+# pyright: reportMissingTypeStubs=false, reportUnknownMemberType=false
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Callable
 from typing import cast
-from unittest.mock import MagicMock
 
 import pytest
 from click.testing import Result
@@ -31,13 +30,22 @@ def make_account(key: str) -> AccountConfig:
     )
 
 
+class FakeDoctorManager:
+    accounts: list[AccountConfig]
+
+    def __init__(self, accounts: list[AccountConfig]) -> None:
+        self.accounts = accounts
+
+    def list(self) -> list[AccountConfig]:
+        return self.accounts
+
+
 def make_runtime(accounts: list[AccountConfig]) -> cli.Runtime:
-    manager = MagicMock()
-    manager.list.return_value = accounts
+    manager = FakeDoctorManager(accounts)
     return cli.Runtime(
-        manager=cast(AccountManager, manager),
-        token_store=cast(TokenStore, MagicMock()),
-        quota_tracker=cast(QuotaTracker, MagicMock()),
+        manager=cast(AccountManager, cast(object, manager)),
+        token_store=cast(TokenStore, object()),
+        quota_tracker=cast(QuotaTracker, object()),
     )
 
 
@@ -45,19 +53,15 @@ def disable_tool_framework(runtime: cli.Runtime) -> None:
     _ = runtime
 
 
-def doctor_probe(**kwargs: object) -> dict[str, object]:
-    return {"account": kwargs["account"]}
-
-
-def doctor_status_for(failing_accounts: set[str]) -> object:
-    def fake_doctor_status(response: Mapping[str, object]) -> tuple[str, bool]:
-        account = response["account"]
+def doctor_probe_for(failing_accounts: set[str]) -> Callable[..., dict[str, object]]:
+    def fake_doctor_probe(**kwargs: object) -> dict[str, object]:
+        account = kwargs["account"]
         assert isinstance(account, str)
         if account in failing_accounts:
-            return f"FAIL: {account}", True
-        return "PASS", False
+            return {"items": [{"id": "UCWRONG"}]}
+        return {"items": [{"id": f"UC{account.upper()}"}]}
 
-    return fake_doctor_status
+    return fake_doctor_probe
 
 
 def invoke_doctor_with_statuses(
@@ -71,8 +75,7 @@ def invoke_doctor_with_statuses(
         lambda: make_runtime([make_account(key) for key in accounts]),
     )
     monkeypatch.setattr(cli, "_configure_tool_framework", disable_tool_framework)
-    monkeypatch.setattr(cli, "youtube_tests_insert", doctor_probe)
-    monkeypatch.setattr(cli, "_doctor_status", doctor_status_for(failing_accounts))
+    monkeypatch.setattr(cli, "youtube_channels_list", doctor_probe_for(failing_accounts))
     return runner.invoke(cli.app, ["doctor"])
 
 
@@ -80,18 +83,27 @@ def test_doctor_all_pass_exits_zero(monkeypatch: pytest.MonkeyPatch) -> None:
     result = invoke_doctor_with_statuses(monkeypatch, ["alpha", "beta"], set())
 
     assert result.exit_code == 0
-    assert result.output == "alpha\tPASS\nbeta\tPASS\n"
+    assert result.output == "alpha\tOK\nbeta\tOK\n"
 
 
 def test_doctor_one_fail_among_many_exits_nonzero(monkeypatch: pytest.MonkeyPatch) -> None:
     result = invoke_doctor_with_statuses(monkeypatch, ["alpha", "beta", "gamma"], {"beta"})
 
     assert result.exit_code == 1
-    assert result.output == "alpha\tPASS\nbeta\tFAIL: beta\ngamma\tPASS\n"
+    expected_output = (
+        "alpha\tOK\n"
+        "beta\tFAIL: channel_id mismatch (expected UCBETA, got UCWRONG)\n"
+        "gamma\tOK\n"
+    )
+    assert result.output == expected_output
 
 
 def test_doctor_all_fail_exits_nonzero(monkeypatch: pytest.MonkeyPatch) -> None:
     result = invoke_doctor_with_statuses(monkeypatch, ["alpha", "beta"], {"alpha", "beta"})
 
     assert result.exit_code == 1
-    assert result.output == "alpha\tFAIL: alpha\nbeta\tFAIL: beta\n"
+    expected_output = (
+        "alpha\tFAIL: channel_id mismatch (expected UCALPHA, got UCWRONG)\n"
+        "beta\tFAIL: channel_id mismatch (expected UCBETA, got UCWRONG)\n"
+    )
+    assert result.output == expected_output

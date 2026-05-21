@@ -90,7 +90,6 @@ QUOTA_COSTS: dict[str, int] = {
     "youtube.liveChatBans.delete": 50,
     "youtube.superChatEvents.list": 1,
     "youtube.abuseReports.insert": 50,
-    "youtube.tests.insert": 0,
     "youtubeAnalytics.reports.query": 1,
     "youtubeAnalytics.groups.list": 1,
     "youtubeAnalytics.groups.insert": 1,

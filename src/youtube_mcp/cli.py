@@ -22,7 +22,7 @@ from youtube_mcp.auth.wizard import run_wizard
 from youtube_mcp.server import mcp
 from youtube_mcp.server import serve as serve_server
 from youtube_mcp.tools._framework import FrameworkContext, configure_framework
-from youtube_mcp.tools.misc import youtube_tests_insert
+from youtube_mcp.tools.channels import youtube_channels_list
 from youtube_mcp.types import AccountConfig, TokenBundle, YouTubeScope
 from youtube_mcp.utils.quota import QuotaTracker
 
@@ -159,14 +159,32 @@ async def _collect_tools(api: ApiFilter | None) -> list[ToolDisplay]:
     return sorted(displays, key=lambda item: item.name)
 
 
-def _doctor_status(response: Mapping[str, object]) -> tuple[str, bool]:
+def _doctor_status(response: Mapping[str, object], channel_id: str | None) -> tuple[str, bool]:
     error = response.get("error")
     if isinstance(error, Mapping):
         reason = error.get("reason")
         reason_text = reason if isinstance(reason, str) else "unknown"
         return f"FAIL: {reason_text}", True
 
-    return "PASS", False
+    items = response.get("items")
+    if not isinstance(items, list) or not items:
+        return "FAIL: no channels returned", True
+
+    first_item = items[0]
+    if not isinstance(first_item, Mapping):
+        return "FAIL: invalid channel payload", True
+
+    if not channel_id:
+        return "FAIL: missing account channel_id", True
+
+    actual_channel_id = first_item.get("id")
+    if not isinstance(actual_channel_id, str):
+        return "FAIL: missing channel id", True
+
+    if actual_channel_id != channel_id:
+        return f"FAIL: channel_id mismatch (expected {channel_id}, got {actual_channel_id})", True
+
+    return "OK", False
 
 
 @app.command()
@@ -311,17 +329,17 @@ def doctor() -> None:
     failures = 0
     for account in accounts:
         try:
-            response = youtube_tests_insert(
+            response = youtube_channels_list(
                 account=account.key,
                 part="snippet",
-                test_body={"snippet": {"description": "youtube-mcp doctor auth probe"}},
-                external_channel_id=account.channel_id,
+                mine=True,
+                max_results=1,
             )
         except Exception as exc:  # pragma: no cover - exact Google exceptions vary by transport.
             failures += 1
-            typer.echo(f"{account.key}\tERROR: {exc}")
+            typer.echo(f"{account.key}\tFAIL: {exc}")
         else:
-            status, is_failure = _doctor_status(response)
+            status, is_failure = _doctor_status(response, account.channel_id)
             if is_failure:
                 failures += 1
             typer.echo(f"{account.key}\t{status}")

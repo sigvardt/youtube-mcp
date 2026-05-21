@@ -1,7 +1,7 @@
 """Tests for the YouTube miscellaneous tools."""
 
 # pyright: reportMissingImports=false, reportMissingTypeStubs=false, reportRedeclaration=false
-# pyright: reportUnannotatedClassAttribute=false, reportUnknownArgumentType=false
+# pyright: reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
 
 from __future__ import annotations
@@ -62,38 +62,17 @@ class FakeAbuseReportsResource:
         return self.insert_request
 
 
-class FakeTestsResource:
-    insert_request: FakeMiscRequest
-    insert_calls: list[dict[str, object]]
-
-    def __init__(self) -> None:
-        self.insert_request = FakeMiscRequest({"id": "auth-probe-1"})
-        self.insert_calls = []
-
-    def insert(self, **kwargs: object) -> FakeMiscRequest:
-        self.insert_calls.append(dict(kwargs))
-        return self.insert_request
-
-
 class FakeYouTubeService:
     abuse_reports_resource: FakeAbuseReportsResource
-    tests_resource: FakeTestsResource
     abuse_reports_calls: int
-    tests_calls: int
 
     def __init__(self) -> None:
         self.abuse_reports_resource = FakeAbuseReportsResource()
-        self.tests_resource = FakeTestsResource()
         self.abuse_reports_calls = 0
-        self.tests_calls = 0
 
     def abuseReports(self) -> FakeAbuseReportsResource:
         self.abuse_reports_calls += 1
         return self.abuse_reports_resource
-
-    def tests(self) -> FakeTestsResource:
-        self.tests_calls += 1
-        return self.tests_resource
 
 
 class FakeAccountManager:
@@ -117,6 +96,10 @@ class FakeAccountManager:
         return object()
 
     def get_youtube_service(self, key: str) -> FakeYouTubeService:
+        cached_service = self._services.get((key, "youtube"))
+        if isinstance(cached_service, FakeYouTubeService):
+            return cached_service
+
         self.youtube_calls.append(key)
         self._services[(key, "youtube")] = self.service
         return self.service
@@ -166,37 +149,25 @@ def _configure(
 
 def test_misc_tools_call_mocked_discovery_client() -> None:
     manager, tracker, guard_calls = _configure()
-    abuse_report_body = {"subject": {"videoId": "video-1"}, "reasonId": "V"}
-    test_body = {"snippet": {"description": "auth probe"}}
+    abuse_report_body: dict[str, object] = {"subject": {"videoId": "video-1"}, "reasonId": "V"}
 
     abuse_result = misc.youtube_abuseReports_insert(
         account="primary",
         part="snippet",
         abuse_report_body=abuse_report_body,
     )
-    test_result = misc.youtube_tests_insert(
-        account="primary",
-        part="snippet",
-        test_body=test_body,
-        external_channel_id="UC123",
-    )
 
     assert abuse_result == {"id": "abuse-report-1"}
-    assert test_result == {"id": "auth-probe-1"}
-    assert manager.credentials_calls == ["primary", "primary"]
-    assert manager.youtube_calls == ["primary", "primary"]
+    assert manager.credentials_calls == ["primary"]
+    assert manager.youtube_calls == ["primary"]
     assert manager.analytics_calls == []
     assert manager.reporting_calls == []
-    assert tracker.preflight_calls == [("primary", 50), ("primary", 0)]
+    assert tracker.preflight_calls == [("primary", 50)]
     assert tracker.record_calls == tracker.preflight_calls
-    assert guard_calls == ["primary", "primary"]
+    assert guard_calls == ["primary"]
     assert manager.service.abuse_reports_calls == 1
-    assert manager.service.tests_calls == 1
     assert manager.service.abuse_reports_resource.insert_calls == [
         {"part": "snippet", "body": abuse_report_body}
-    ]
-    assert manager.service.tests_resource.insert_calls == [
-        {"part": "snippet", "body": test_body, "externalChannelId": "UC123"}
     ]
 
 
@@ -210,44 +181,23 @@ async def test_all_misc_tool_names_are_registered_with_fastmcp() -> None:
         "abuse_report_body",
         "ctx",
     ]
-    assert list(inspect.signature(misc.youtube_tests_insert).parameters) == [
-        "account",
-        "part",
-        "test_body",
-        "external_channel_id",
-        "ctx",
-    ]
 
     tools = await mcp.list_tools()
     registered = {tool.name: tool for tool in tools}
 
-    assert {"youtube_abuseReports_insert", "youtube_tests_insert"} <= registered.keys()
+    assert "youtube_abuseReports_insert" in registered
     assert registered["youtube_abuseReports_insert"].tags == {"mutating"}
-    assert registered["youtube_tests_insert"].tags == {"mutating"}
     assert registered["youtube_abuseReports_insert"].parameters["required"] == [
         "account",
         "part",
         "abuse_report_body",
     ]
-    assert registered["youtube_tests_insert"].parameters["required"] == [
-        "account",
-        "part",
-        "test_body",
-    ]
     assert "ctx" not in registered["youtube_abuseReports_insert"].parameters["properties"]
-    assert "ctx" not in registered["youtube_tests_insert"].parameters["properties"]
 
     abuse_meta = cast(dict[str, object], registered["youtube_abuseReports_insert"].meta)
-    test_meta = cast(dict[str, object], registered["youtube_tests_insert"].meta)
     assert abuse_meta == {
         "api": "youtube",
         "method": "youtube.abuseReports.insert",
         "scopes": ["https://www.googleapis.com/auth/youtube.force-ssl"],
         "cost": 50,
-    }
-    assert test_meta == {
-        "api": "youtube",
-        "method": "youtube.tests.insert",
-        "scopes": ["https://www.googleapis.com/auth/youtube.readonly"],
-        "cost": 0,
     }

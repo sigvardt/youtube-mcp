@@ -1,10 +1,9 @@
 """Tests for the Typer CLI entry point."""
-# pyright: reportMissingTypeStubs=false, reportAny=false
+# pyright: reportMissingTypeStubs=false
 
 from __future__ import annotations
 
-from typing import cast
-from unittest.mock import MagicMock
+from typing import NoReturn, cast
 
 import pytest
 import typer
@@ -30,11 +29,29 @@ def make_account() -> AccountConfig:
     )
 
 
-def make_runtime(manager: MagicMock) -> cli.Runtime:
+class FakeCliManager:
+    accounts: list[AccountConfig]
+    remove_calls: list[str]
+
+    def __init__(self, accounts: list[AccountConfig] | None = None) -> None:
+        self.accounts = accounts or [make_account()]
+        self.remove_calls = []
+
+    def list(self) -> list[AccountConfig]:
+        return self.accounts
+
+    def get(self, _key: str) -> AccountConfig:
+        return self.accounts[0]
+
+    def remove(self, key: str) -> None:
+        self.remove_calls.append(key)
+
+
+def make_runtime(manager: object) -> cli.Runtime:
     return cli.Runtime(
         manager=cast(AccountManager, manager),
-        token_store=cast(TokenStore, MagicMock()),
-        quota_tracker=cast(QuotaTracker, MagicMock()),
+        token_store=cast(TokenStore, object()),
+        quota_tracker=cast(QuotaTracker, object()),
     )
 
 
@@ -42,14 +59,24 @@ def _disable_tool_framework(runtime: cli.Runtime) -> None:
     _ = runtime
 
 
-def _doctor_probe_pass(**kwargs: object) -> dict[str, object]:
+def _doctor_probe_ok(**kwargs: object) -> dict[str, object]:
     _ = kwargs
-    return {"id": "probe-1"}
+    return {"items": [{"id": "UC123"}]}
 
 
-def _doctor_probe_fail(**kwargs: object) -> dict[str, object]:
+def _doctor_probe_empty(**kwargs: object) -> dict[str, object]:
     _ = kwargs
-    return {"error": {"reason": "insufficientPermissions"}}
+    return {"items": []}
+
+
+def _doctor_probe_mismatch(**kwargs: object) -> dict[str, object]:
+    _ = kwargs
+    return {"items": [{"id": "UC999"}]}
+
+
+def _doctor_probe_raises(**kwargs: object) -> NoReturn:
+    _ = kwargs
+    raise RuntimeError("boom")
 
 
 def test_help_exits_zero_and_shows_command_tree() -> None:
@@ -85,10 +112,10 @@ def test_tools_list_prints_registered_tools(monkeypatch: pytest.MonkeyPatch) -> 
         calls.append(api)
         return [
             cli.ToolDisplay(
-                name="youtube_tests_insert",
+                name="youtube_abuseReports_insert",
                 api="youtube",
-                method="youtube.tests.insert",
-                summary="Run auth probe.",
+                method="youtube.abuseReports.insert",
+                summary="Submit an abuse report.",
             )
         ]
 
@@ -98,71 +125,81 @@ def test_tools_list_prints_registered_tools(monkeypatch: pytest.MonkeyPatch) -> 
 
     assert result.exit_code == 0
     assert calls == ["youtube"]
-    assert "youtube_tests_insert" in result.output
-    assert "youtube.tests.insert" in result.output
-    assert "Run auth probe." in result.output
+    assert "youtube_abuseReports_insert" in result.output
+    assert "youtube.abuseReports.insert" in result.output
+    assert "Submit an abuse report." in result.output
 
 
 def test_auth_remove_requires_confirmation_and_yes_bypasses(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    manager = MagicMock()
-    manager.get.return_value = make_account()
+    manager = FakeCliManager()
     monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
 
     cancel_result = runner.invoke(cli.app, ["auth", "remove", "primary"], input="n\n")
 
     assert cancel_result.exit_code == 1
-    manager.remove.assert_not_called()
+    assert manager.remove_calls == []
 
     yes_result = runner.invoke(cli.app, ["auth", "remove", "primary", "--yes"])
 
     assert yes_result.exit_code == 0
-    manager.remove.assert_called_once_with("primary")
+    assert manager.remove_calls == ["primary"]
     assert "Removed account 'primary'." in yes_result.output
 
 
-def test_doctor_reports_pass_and_exits_zero(monkeypatch: pytest.MonkeyPatch) -> None:
-    manager = MagicMock()
-    manager.list.return_value = [make_account()]
+def test_doctor_reports_ok_and_exits_zero(monkeypatch: pytest.MonkeyPatch) -> None:
+    manager = FakeCliManager()
     monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
     monkeypatch.setattr(cli, "_configure_tool_framework", _disable_tool_framework)
-    monkeypatch.setattr(cli, "youtube_tests_insert", _doctor_probe_pass)
+    monkeypatch.setattr(cli, "youtube_channels_list", _doctor_probe_ok)
 
     result = runner.invoke(cli.app, ["doctor"])
 
     assert result.exit_code == 0
-    assert "primary\tPASS" in result.output
+    assert "primary\tOK" in result.output
 
 
-def test_doctor_reports_error_reason_and_exits_nonzero(
+def test_doctor_reports_empty_items_and_exits_nonzero(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    manager = MagicMock()
-    manager.list.return_value = [make_account()]
+    manager = FakeCliManager()
     monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
     monkeypatch.setattr(cli, "_configure_tool_framework", _disable_tool_framework)
-    monkeypatch.setattr(cli, "youtube_tests_insert", _doctor_probe_fail)
+    monkeypatch.setattr(cli, "youtube_channels_list", _doctor_probe_empty)
 
     result = runner.invoke(cli.app, ["doctor"])
 
     assert result.exit_code == 1
-    assert "primary\tFAIL: insufficientPermissions" in result.output
+    assert "primary\tFAIL: no channels returned" in result.output
+
+
+def test_doctor_reports_channel_id_mismatch_and_exits_nonzero(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manager = FakeCliManager()
+    monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
+    monkeypatch.setattr(cli, "_configure_tool_framework", _disable_tool_framework)
+    monkeypatch.setattr(cli, "youtube_channels_list", _doctor_probe_mismatch)
+
+    result = runner.invoke(cli.app, ["doctor"])
+
+    assert result.exit_code == 1
+    assert "primary\tFAIL: channel_id mismatch (expected UC123, got UC999)" in result.output
 
 
 def test_doctor_direct_call_raises_exit_on_fail(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    manager = MagicMock()
-    manager.list.return_value = [make_account()]
+    manager = FakeCliManager()
     monkeypatch.setattr(cli, "_runtime", lambda: make_runtime(manager))
     monkeypatch.setattr(cli, "_configure_tool_framework", _disable_tool_framework)
-    monkeypatch.setattr(cli, "youtube_tests_insert", _doctor_probe_fail)
+    monkeypatch.setattr(cli, "youtube_channels_list", _doctor_probe_raises)
 
     with pytest.raises(typer.Exit) as exc_info:
         cli.doctor()
 
     captured = capsys.readouterr()
     assert exc_info.value.exit_code == 1
-    assert "primary\tFAIL: insufficientPermissions" in captured.out
+    assert "primary\tFAIL: boom" in captured.out
