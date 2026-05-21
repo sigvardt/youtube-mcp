@@ -40,7 +40,7 @@ The wheel also installs a `youtube-mcp` console alias for persistent virtual env
 For local development from a clone:
 
 ```bash
-git clone https://github.com/joakimsigvardt/youtube-mcp.git
+git clone https://github.com/sigvardt/youtube-mcp.git
 cd youtube-mcp
 uv sync
 uv run youtube-mcp --help

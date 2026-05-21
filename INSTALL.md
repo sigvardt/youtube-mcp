@@ -22,7 +22,7 @@ The wheel also provides a `youtube-mcp` console alias for persistent virtual env
 For local development from a clone, sync deps and replace `uvx youtube-api-mcp` with `uv run youtube-mcp` in the commands below:
 
 ```bash
-git clone https://github.com/joakimsigvardt/youtube-mcp.git
+git clone https://github.com/sigvardt/youtube-mcp.git
 cd youtube-mcp
 uv sync
 ```
