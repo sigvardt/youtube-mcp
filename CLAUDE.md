@@ -78,7 +78,7 @@ src/youtube_mcp/
 │   ├── live_chat.py
 │   ├── livestream.py
 │   ├── members.py
-│   ├── misc.py            # incl. youtube_tests_insert (auth probe used by `doctor`)
+│   ├── misc.py            # abuseReports
 │   ├── playlists.py
 │   ├── reporting_jobs.py
 │   ├── reporting_reports.py
@@ -158,7 +158,7 @@ Eight subcommands. Implementations live in `cli.py`.
 4. `youtube-mcp auth remove <key> [--yes]`: drop an account and its stored token.
 5. `youtube-mcp auth refresh <key>`: force token refresh.
 6. `youtube-mcp status`: accounts + token freshness + quota usage.
-7. `youtube-mcp doctor`: runs `youtube.tests.insert` per account as an auth smoke probe.
+7. `youtube-mcp doctor`: runs `youtube.channels.list(mine=true)` per account as an auth smoke probe and prints `OK` when the returned channel id matches the account config.
 8. `youtube-mcp tools list [--api youtube|analytics|reporting]`: enumerate registered MCP tools with summaries.
 
 When you add a CLI command, update `ROOT_HELP` in `cli.py` and the list above.
