@@ -72,7 +72,7 @@ def youtube_reporting_reports_list(
 ) -> dict[str, object]:
     """List generated reports for a reporting job."""
     service = _reporting_service(account)
-    return cast(
+    response = cast(
         dict[str, object],
         service.jobs()
         .reports()
@@ -87,6 +87,9 @@ def youtube_reporting_reports_list(
         )
         .execute(),
     )
+    if "reports" not in response:
+        response["reports"] = []
+    return response
 
 
 @youtube_tool(

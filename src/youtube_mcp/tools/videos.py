@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from youtube_mcp.server import mcp
 from youtube_mcp.tools._framework import _require_context, youtube_tool
-from youtube_mcp.types import UploadProgress, YouTubeScope
+from youtube_mcp.types import GoogleApiError, UploadProgress, YouTubeScope
 
 UPLOAD_CHUNK_SIZE = 8 * 1024 * 1024
 VideoRating = Literal["like", "dislike", "none"]
@@ -28,6 +28,10 @@ class VideoTrainabilityResponse(BaseModel):
     kind: str | None = None
     etag: str | None = None
     permitted: list[str] = Field(default_factory=list)
+    error: GoogleApiError | None = Field(
+        default=None,
+        exclude_if=lambda value: value is None,
+    )
 
 
 def _youtube_service(account: str) -> Any:

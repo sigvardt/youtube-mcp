@@ -264,6 +264,32 @@ def test_list_and_get_call_reporting_reports_with_mocked_discovery_client() -> N
     assert manager.service.jobs_resource.reports_resource.get_request.execute_calls == 1
 
 
+def test_reporting_reports_list_normalizes_missing_reports() -> None:
+    fake_service = FakeReportingService()
+    fake_service.jobs_resource.reports_resource.list_request.response = {}
+    manager, tracker = _configure(service=fake_service)
+
+    listed = reporting_reports.youtube_reporting_reports_list(
+        account="primary",
+        job_id="job-empty",
+    )
+
+    assert listed == {"reports": []}
+    assert tracker.preflight_calls == [("primary", 1)]
+    assert tracker.record_calls == [("primary", 1)]
+    assert manager.service.jobs_resource.reports_resource.list_calls == [
+        {
+            "jobId": "job-empty",
+            "createdAfter": None,
+            "startTimeAtOrAfter": None,
+            "startTimeBefore": None,
+            "onBehalfOfContentOwner": None,
+            "pageSize": None,
+            "pageToken": None,
+        }
+    ]
+
+
 def test_wait_for_next_report_polls_until_report_appears(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
