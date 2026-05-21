@@ -7,15 +7,18 @@
 from __future__ import annotations
 
 import inspect
+import json
 from collections.abc import Callable
 from typing import ClassVar, cast
 
 import pytest
+from googleapiclient.errors import HttpError
+from httplib2 import Response  # type: ignore[import-untyped]
 
 import youtube_mcp.tools.playlist_images as playlist_images
 from youtube_mcp.server import mcp
 from youtube_mcp.tools._framework import FrameworkContext, configure_framework
-from youtube_mcp.types import RetryPolicy, YouTubeScope
+from youtube_mcp.types import GoogleApiError, RetryPolicy, YouTubeScope
 
 PLAYLIST_IMAGE_TOOL_NAMES = {
     "youtube_playlistImages_list",
@@ -46,14 +49,18 @@ class FakeQuotaTracker:
 
 class FakeYouTubeRequest:
     response: object
+    error: HttpError | None
     execute_calls: int
 
-    def __init__(self, response: object) -> None:
+    def __init__(self, response: object, *, error: HttpError | None = None) -> None:
         self.response = response
+        self.error = error
         self.execute_calls = 0
 
     def execute(self) -> object:
         self.execute_calls += 1
+        if self.error is not None:
+            raise self.error
         return self.response
 
 
@@ -154,6 +161,15 @@ def _retry_policy() -> RetryPolicy:
     return RetryPolicy(max_attempts=3, initial_wait=0.001, max_wait=0.01, jitter=False)
 
 
+def _http_error(status: int, body_reason: str, message: str) -> HttpError:
+    response = Response({"status": str(status)})
+    response.reason = "HTTP Error"
+    body = json.dumps(
+        {"error": {"errors": [{"reason": body_reason}], "message": message}}
+    ).encode("utf-8")
+    return HttpError(response, body)
+
+
 def _configure(
     *,
     service: FakeYouTubeService | None = None,
@@ -180,7 +196,7 @@ def test_playlist_images_tools_call_mocked_discovery_client(
     monkeypatch.setattr(playlist_images, "MediaFileUpload", FakeMediaFileUpload)
     guard_calls: list[str] = []
     manager, tracker = _configure(mutating_guard=guard_calls.append)
-    image_body = playlist_images.PlaylistImageResource(
+    image_body = playlist_images.PlaylistImageBody(
         snippet=playlist_images.PlaylistImageSnippet.model_validate(
             {"playlistId": "PL123", "type": "hero"}
         )
@@ -273,6 +289,31 @@ def test_playlist_images_tools_call_mocked_discovery_client(
     ]
 
 
+def test_playlistImages_direct_resource_subclass_input_does_not_forward_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    FakeMediaFileUpload.instances = []
+    monkeypatch.setattr(playlist_images, "MediaFileUpload", FakeMediaFileUpload)
+    manager, _ = _configure()
+    image_body = playlist_images.PlaylistImageResource(
+        snippet=playlist_images.PlaylistImageSnippet.model_validate(
+            {"playlistId": "PL123", "type": "hero"}
+        ),
+        error=GoogleApiError(status=404, reason="notFound", message="ignored"),
+    )
+
+    _ = playlist_images.youtube_playlistImages_insert(
+        account="primary",
+        part="snippet",
+        image_body=image_body,
+        image_file_path="/tmp/cover.png",
+    )
+
+    assert manager.service.playlist_images_resource.insert_calls[0]["body"] == {
+        "snippet": {"playlistId": "PL123", "type": "hero"}
+    }
+
+
 @pytest.mark.parametrize("empty_body", ["", None])
 def test_playlistImages_delete_normalizes_empty_response_body(
     empty_body: object,
@@ -287,6 +328,74 @@ def test_playlistImages_delete_normalizes_empty_response_body(
     )
 
     assert result == playlist_images.EmptyResponse()
+
+
+def test_playlistImages_response_models_accept_framework_error_envelope() -> None:
+    error_body: dict[str, object] = {
+        "error": {"status": 404, "reason": "notFound", "message": "Image not found"}
+    }
+
+    listed = playlist_images.PlaylistImageListResponse.model_validate(error_body)
+    image = playlist_images.PlaylistImageResource.model_validate(error_body)
+    empty = playlist_images.EmptyResponse.model_validate(error_body)
+
+    assert listed.error is not None
+    assert listed.error.status == 404
+    assert listed.error.reason == "notFound"
+    assert listed.items == []
+    assert image.error is not None
+    assert image.error.message == "Image not found"
+    assert empty.error is not None
+    assert empty.error.status == 404
+    list_dump = playlist_images.PlaylistImageListResponse().model_dump(mode="json")
+    resource_dump = playlist_images.PlaylistImageResource().model_dump(mode="json")
+    assert "error" not in list_dump
+    assert list_dump["items"] == []
+    assert "error" not in resource_dump
+    assert playlist_images.EmptyResponse().model_dump(mode="json") == {}
+
+
+def test_playlistImages_body_rejects_framework_error_envelope() -> None:
+    with pytest.raises(ValueError):
+        _ = playlist_images.PlaylistImageBody.model_validate(
+            {"error": {"status": 404, "reason": "notFound", "message": "Image not found"}}
+        )
+
+
+@pytest.mark.asyncio
+async def test_playlistImages_list_http_error_matches_registered_output_schema() -> None:
+    manager, tracker = _configure()
+    manager.service.playlist_images_resource.list_request.error = _http_error(
+        404,
+        "notFound",
+        "Image not found",
+    )
+
+    result = await mcp.call_tool(
+        "youtube_playlistImages_list",
+        {"account": "primary", "part": "snippet"},
+    )
+
+    assert result.structured_content == {
+        "error": {"status": 404, "reason": "notFound", "message": "Image not found"}
+    }
+    assert tracker.record_calls == []
+
+
+@pytest.mark.asyncio
+async def test_playlistImages_list_success_omits_error_keys_from_structured_content() -> None:
+    _manager, _tracker = _configure()
+
+    result = await mcp.call_tool(
+        "youtube_playlistImages_list",
+        {"account": "primary", "part": "snippet"},
+    )
+
+    assert result.structured_content is not None
+    assert "error" not in result.structured_content
+    items = cast(list[object], result.structured_content["items"])
+    first_item = cast(dict[str, object], items[0])
+    assert "error" not in first_item
 
 
 def test_playlistImages_update_does_not_forward_on_behalf_of_content_owner_channel(
@@ -377,6 +486,12 @@ async def test_registered() -> None:
 
     assert PLAYLIST_IMAGE_TOOL_NAMES <= registered.keys()
     assert registered["youtube_playlistImages_list"].tags == set()
+    assert '"error"' not in json.dumps(registered["youtube_playlistImages_insert"].parameters)
+    assert '"error"' not in json.dumps(registered["youtube_playlistImages_update"].parameters)
+    for tool_name in PLAYLIST_IMAGE_TOOL_NAMES:
+        output_schema = registered[tool_name].output_schema
+        assert output_schema is not None
+        assert "error" in output_schema["properties"]
     for tool_name in MUTATING_TOOL_NAMES:
         tool = registered[tool_name]
         assert tool.tags == {"mutating"}

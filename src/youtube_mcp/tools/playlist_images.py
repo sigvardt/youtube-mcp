@@ -12,7 +12,7 @@ from googleapiclient.http import MediaFileUpload
 from pydantic import BaseModel, ConfigDict, Field
 
 from youtube_mcp.tools._framework import _require_context, youtube_tool
-from youtube_mcp.types import YouTubeScope
+from youtube_mcp.types import GoogleApiError, YouTubeScope
 
 
 class PlaylistImageSnippet(BaseModel):
@@ -26,14 +26,23 @@ class PlaylistImageSnippet(BaseModel):
     height: int | None = None
 
 
-class PlaylistImageResource(BaseModel):
-    """Stable playlistImage request and response model."""
+class PlaylistImageBody(BaseModel):
+    """Stable playlistImage request body model."""
 
     model_config = ConfigDict(extra="forbid")
 
     kind: str | None = None
     id: str | None = None
     snippet: PlaylistImageSnippet | None = None
+
+
+class PlaylistImageResource(PlaylistImageBody):
+    """Stable playlistImage response model."""
+
+    error: GoogleApiError | None = Field(
+        default=None,
+        exclude_if=lambda value: value is None,
+    )
 
 
 class PageInfo(BaseModel):
@@ -55,12 +64,21 @@ class PlaylistImageListResponse(BaseModel):
     prev_page_token: str | None = Field(default=None, alias="prevPageToken")
     page_info: PageInfo | None = Field(default=None, alias="pageInfo")
     items: list[PlaylistImageResource] = Field(default_factory=list)
+    error: GoogleApiError | None = Field(
+        default=None,
+        exclude_if=lambda value: value is None,
+    )
 
 
 class EmptyResponse(BaseModel):
     """Empty response for delete endpoints."""
 
     model_config = ConfigDict(extra="forbid")
+
+    error: GoogleApiError | None = Field(
+        default=None,
+        exclude_if=lambda value: value is None,
+    )
 
 
 def _youtube_service(account: str) -> Any:
@@ -126,7 +144,7 @@ def youtube_playlistImages_list(
 def youtube_playlistImages_insert(
     account: str,
     part: str,
-    image_body: PlaylistImageResource,
+    image_body: PlaylistImageBody,
     image_file_path: str,
     on_behalf_of_content_owner: str | None = None,
     ctx: Context | None = None,
@@ -139,7 +157,7 @@ def youtube_playlistImages_insert(
         service.playlistImages()
         .insert(
             part=part,
-            body=image_body.model_dump(by_alias=True, exclude_none=True),
+            body=image_body.model_dump(by_alias=True, exclude_none=True, exclude={"error"}),
             media_body=_image_upload(image_file_path),
             onBehalfOfContentOwner=on_behalf_of_content_owner,
         )
@@ -159,7 +177,7 @@ def youtube_playlistImages_insert(
 def youtube_playlistImages_update(
     account: str,
     part: str,
-    image_body: PlaylistImageResource,
+    image_body: PlaylistImageBody,
     image_file_path: str,
     on_behalf_of_content_owner: str | None = None,
     ctx: Context | None = None,
@@ -172,7 +190,7 @@ def youtube_playlistImages_update(
         service.playlistImages()
         .update(
             part=part,
-            body=image_body.model_dump(by_alias=True, exclude_none=True),
+            body=image_body.model_dump(by_alias=True, exclude_none=True, exclude={"error"}),
             media_body=_image_upload(image_file_path),
             onBehalfOfContentOwner=on_behalf_of_content_owner,
         )
