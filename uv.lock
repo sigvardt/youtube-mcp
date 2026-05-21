@@ -1792,7 +1792,7 @@ requires-dist = [
     { name = "google-auth-oauthlib" },
     { name = "httpx" },
     { name = "keyring" },
-    { name = "pydantic", specifier = ">=2" },
+    { name = "pydantic", specifier = ">=2.12" },
     { name = "tenacity" },
     { name = "typer" },
     { name = "typing-extensions", specifier = ">=4.4" },

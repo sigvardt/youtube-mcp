@@ -34,7 +34,7 @@ dependencies = [
   "keyring",
   "tenacity",
   "typing-extensions>=4.4",
-  "pydantic>=2",
+  "pydantic>=2.12",
   "httpx",
   "typer",
 ]
