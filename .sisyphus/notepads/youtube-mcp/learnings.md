@@ -901,3 +901,10 @@ Must Have [12/12] | Must NOT Have [8/8] | Tasks [48/48] | videos.delete grep [CL
 - Pre-commit gates: ruff/mypy/pytest/grep all PASS (`uv run ruff check src/ tests/`, `uv run mypy --strict src/`, `uv run pytest tests/unit tests/integration -q` with 227 passed, forbidden grep exit 1).
 - Working tree state after push: target clean except intentionally untracked Sisyphus-owned plan/runtime files; `.playwright-mcp/` is ignored as external Playwright MCP runtime noise.
 2026-05-21 - PyPI naming collision: `youtube-mcp` and `youtube-mcp-server` are already occupied on PyPI by unrelated packages. This project should publish as `youtube-complete-mcp` and keep `youtube-mcp` only as a console-script alias. End-user uvx docs should prefer `uvx youtube-complete-mcp ...`; alias-only usage requires `uvx --from youtube-complete-mcp youtube-mcp ...`.
+
+## [2026-05-21] Bug: CLI serve registered tools without runtime framework context
+
+- Root cause: `youtube-mcp serve` built the CLI `Runtime` but never called `_configure_tool_framework(runtime)` before `serve_server(...)`. Tool schemas registered through `server.make_app()`, but first dispatch hit `_framework._require_context()` with `_ctx is None` and failed before account lookup.
+- Fix pattern: configure the framework from `cli.serve()` before the blocking server run, and wire `server.configure_account_provider(...)` at the same point so `youtube://accounts` and `youtube://status` reflect the runtime account config.
+- Public Data API fallback: `AccountManager` treats account key `default` as an API-key account only when no OAuth account named `default` exists and `YOUTUBE_MCP_API_KEY` or `YOUTUBE_API_KEY` is set. It builds `youtube/v3` with `developerKey=` and rejects Analytics or Reporting with a specific OAuth-required error.
+- Verification: fake CLI serve MCP dispatch reached `youtube_i18nLanguages_list` through `FastMCP.call_tool`, quota preflight and record ran, and resources returned the fake account. A no-account API-key runtime skipped the wizard and returned i18n languages via `developerKey`. Missing default config now reports the account/API-key cause instead of framework-unconfigured.
