@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-21
+
+### Fixed
+
+- doctor command now probes channels.list(mine=true) instead of the defunct tests.insert endpoint.
+
 ## [0.1.0] - 2026-05-21
 
 ### Breaking changes
