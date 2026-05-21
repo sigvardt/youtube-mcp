@@ -1,5 +1,10 @@
 # learnings.md (youtube-mcp)
 
+## [2026-05-21] AccountNotFoundError message UX
+
+- `AccountNotFoundError` subclasses `KeyError`, so plain string messages get wrapped in extra quotes unless `__str__` is overridden. Use `typing_extensions.override` on the override because the project runs on Python 3.11 and basedpyright flags implicit overrides.
+- Unknown-account messages should point agents to exact local OAuth keys from `youtube://accounts` or `youtube-mcp auth list`; `default` is only the public API-key path via `YOUTUBE_MCP_API_KEY`, not an OAuth fallback.
+
 ## [2026-05-21] Doctor auth probe endpoint
 
 - `youtube.tests.insert` is still exposed by old googleapiclient discovery data but the public docs now 404 and live normal-channel tokens receive `insufficientPermissions`. Do not use it for health checks or expose it as an MCP tool.
