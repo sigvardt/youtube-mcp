@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-21
+
+### Added
+
+- Support API-key-backed `default` account calls for public YouTube Data API tools when no OAuth account named `default` exists.
+
+### Fixed
+
+- Configure the tool framework during `youtube-mcp serve` startup so registered MCP tools can dispatch with the runtime account manager and quota tracker.
+- Report the resolved account config path, configured account count, and API-key status at server startup.
+
 ## [0.1.1] - 2026-05-21
 
 ### Fixed
