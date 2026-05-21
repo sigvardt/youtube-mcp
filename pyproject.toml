@@ -3,10 +3,28 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "youtube-mcp"
-version = "0.0.1"
-description = "MCP server for YouTube workflows"
+name = "youtube-api-mcp"
+version = "0.1.0"
+description = "MCP server for YouTube Data, Analytics, and Reporting API workflows"
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11,<3.13"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Joakim Sigvardt" },
+]
+keywords = ["mcp", "youtube", "youtube-data-api", "youtube-analytics", "youtube-reporting"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
   "fastmcp>=2.0",
   "google-api-python-client",
@@ -20,11 +38,27 @@ dependencies = [
   "typer",
 ]
 
+[project.urls]
+Homepage = "https://github.com/joakimsigvardt/youtube-mcp"
+Repository = "https://github.com/joakimsigvardt/youtube-mcp"
+Issues = "https://github.com/joakimsigvardt/youtube-mcp/issues"
+Changelog = "https://github.com/joakimsigvardt/youtube-mcp/blob/main/CHANGELOG.md"
+
 [project.scripts]
+youtube-api-mcp = "youtube_mcp.cli:main"
 youtube-mcp = "youtube_mcp.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/youtube_mcp"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.DS_Store",
+  "/.omo",
+  "/.playwright-mcp",
+  "/.sisyphus",
+  "/.venv",
+]
 
 [tool.uv]
 dev-dependencies = [

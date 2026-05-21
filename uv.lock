@@ -1754,8 +1754,8 @@ wheels = [
 ]
 
 [[package]]
-name = "youtube-mcp"
-version = "0.0.1"
+name = "youtube-api-mcp"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
