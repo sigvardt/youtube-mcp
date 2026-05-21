@@ -19,8 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Documented Google deprecation of `home` on `youtube_activities_list` and `hl` on `youtube_channelSections_list` in the tool docstrings.
 - Removed `on_behalf_of_content_owner_channel` from `youtube_playlistImages_update` and `youtube_playlistImages_delete`. The current Discovery schema no longer accepts `onBehalfOfContentOwnerChannel` for those methods.
-- Packaged the release for PyPI under the available `youtube-api-mcp` distribution name, while keeping `youtube-mcp` as a console-script alias.
-- Updated the MCP client examples and install guide to use `uvx youtube-api-mcp ...` for published installs.
+- Packaged the release for PyPI under the available `youtube-complete-mcp` distribution name, while keeping `youtube-mcp` as a console-script alias.
+- Updated the MCP client examples and install guide to use `uvx youtube-complete-mcp ...` for published installs.
 - Removed the local Analytics monetary-scope pre-check so Google returns its canonical `youtubeAnalyticsRevenue` 403 response.
 - Fixed `youtube_analytics_reports_query` so named query parameters and `extra_params` are merged instead of silently dropping the named parameters when extras are present.
 

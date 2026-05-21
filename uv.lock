@@ -1754,7 +1754,7 @@ wheels = [
 ]
 
 [[package]]
-name = "youtube-api-mcp"
+name = "youtube-complete-mcp"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

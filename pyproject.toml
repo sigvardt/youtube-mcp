@@ -3,7 +3,7 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "youtube-api-mcp"
+name = "youtube-complete-mcp"
 version = "0.1.0"
 description = "MCP server for YouTube Data, Analytics, and Reporting API workflows"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -45,7 +45,7 @@ Issues = "https://github.com/sigvardt/youtube-mcp/issues"
 Changelog = "https://github.com/sigvardt/youtube-mcp/blob/main/CHANGELOG.md"
 
 [project.scripts]
-youtube-api-mcp = "youtube_mcp.cli:main"
+youtube-complete-mcp = "youtube_mcp.cli:main"
 youtube-mcp = "youtube_mcp.cli:main"
 
 [tool.hatch.build.targets.wheel]
