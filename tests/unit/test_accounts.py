@@ -226,6 +226,38 @@ def test_unknown_account_raises(tmp_path: Path) -> None:
         _ = manager.get("missing")
 
 
+def test_unknown_account_error_lists_configured_keys(tmp_path: Path) -> None:
+    config_store = AccountConfigStore(tmp_path / "accounts.json")
+    config_store.save([make_account("brand"), make_account("power-norge")])
+    manager = AccountManager(config_store, InMemoryTokenStore())
+
+    with pytest.raises(AccountNotFoundError) as exc_info:
+        _ = manager.get("power")
+
+    message = str(exc_info.value)
+    assert message.startswith("Account 'power' is not configured")
+    assert "Configured OAuth account keys: 'brand', 'power-norge'" in message
+    assert "youtube://accounts" in message
+    assert "youtube-mcp auth list" in message
+    assert "'default' is only for public YouTube Data API calls" in message
+    assert "not an OAuth fallback" in message
+
+
+def test_default_account_error_clarifies_public_api_key_only(tmp_path: Path) -> None:
+    config_store = AccountConfigStore(tmp_path / "accounts.json")
+    config_store.save([make_account("power-norge")])
+    manager = AccountManager(config_store, InMemoryTokenStore())
+
+    with pytest.raises(AccountNotFoundError) as exc_info:
+        _ = manager.get("default")
+
+    message = str(exc_info.value)
+    assert message.startswith("Account 'default' is not configured")
+    assert "Configured OAuth account keys: 'power-norge'" in message
+    assert "YOUTUBE_MCP_API_KEY" in message
+    assert "not a default OAuth account" in message
+
+
 def test_youtube_api_key_from_env_prefers_namespaced_value(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

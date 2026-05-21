@@ -19,6 +19,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import Resource, build
 from pydantic import TypeAdapter
+from typing_extensions import override
 
 from youtube_mcp.auth.oauth_flow import TOKEN_URI, load_client_creds_from_file, run_oauth_flow
 from youtube_mcp.auth.token_store import TokenStore
@@ -83,6 +84,12 @@ class CredentialsFactory(Protocol):
 
 class AccountNotFoundError(KeyError):
     """Raised when an account key is not configured."""
+
+    @override
+    def __str__(self) -> str:
+        if len(self.args) == 1 and isinstance(self.args[0], str):
+            return self.args[0]
+        return super().__str__()
 
 
 class AccountConfigStore:
@@ -191,13 +198,7 @@ class AccountManager:
     def get(self, key: str) -> AccountConfig:
         account = self._config_store.get(key)
         if account is None:
-            if key == PUBLIC_API_KEY_ACCOUNT:
-                message = (
-                    f"Account {key!r} is not configured; set {YOUTUBE_MCP_API_KEY_ENV} for "
-                    + "public YouTube Data API calls or add an OAuth account"
-                )
-                raise AccountNotFoundError(message)
-            raise AccountNotFoundError(f"Account {key!r} is not configured")
+            raise AccountNotFoundError(self._account_not_found_message(key))
         return account
 
     def remove(self, key: str) -> None:
@@ -273,11 +274,7 @@ class AccountManager:
 
             api_key = self._api_key
             if api_key is None:
-                message = (
-                    f"Account {key!r} is not configured; set {YOUTUBE_MCP_API_KEY_ENV} for "
-                    + "public YouTube Data API calls or add an OAuth account"
-                )
-                raise AccountNotFoundError(message)
+                raise AccountNotFoundError(self._account_not_found_message(key))
 
             service = cast(Resource, build("youtube", "v3", developerKey=api_key))
             self._services[cache_key] = service
@@ -289,6 +286,23 @@ class AccountManager:
             and self._api_key is not None
             and self._config_store.get(key) is None
         )
+
+    def _account_not_found_message(self, key: str) -> str:
+        configured_keys = [account.key for account in self._config_store.load()]
+        configured = ", ".join(repr(configured_key) for configured_key in configured_keys)
+        if not configured:
+            configured = "none"
+
+        message = (
+            f"Account {key!r} is not configured. "
+            + f"Configured OAuth account keys: {configured}. "
+            + "Use the exact key from youtube://accounts or `youtube-mcp auth list`. "
+            + f"The reserved key {PUBLIC_API_KEY_ACCOUNT!r} is only for public YouTube "
+            + f"Data API calls when {YOUTUBE_MCP_API_KEY_ENV} is set"
+        )
+        if key == PUBLIC_API_KEY_ACCOUNT:
+            return message + "; it is not a default OAuth account."
+        return message + "; it is not an OAuth fallback."
 
     def _clear_cached_services(self, key: str) -> None:
         with self._services_lock:
