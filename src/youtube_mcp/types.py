@@ -26,6 +26,16 @@ class YouTubeScope(str, Enum):  # noqa: UP042
     REPORTING = "https://www.googleapis.com/auth/yt-analytics.readonly"
 
 
+class GoogleApiError(BaseModel):
+    """Structured Google API error returned through MCP tool output."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    status: int
+    reason: str
+    message: str
+
+
 class AccountConfig(BaseModel):
     """OAuth account configuration for a single YouTube account."""
 
