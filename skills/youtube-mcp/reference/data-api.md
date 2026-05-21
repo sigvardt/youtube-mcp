@@ -865,19 +865,6 @@ Channel-level abuse reports (distinct from `videos.reportAbuse`).
 - Mutating: yes
 - Example: `youtube_abuseReports_insert(account="primary", part="snippet", abuse_report_body={"snippet": {"abuseTypes": [{"id": "S"}], "subject": {"id": "UC...", "type": "channel"}, "description": "..."}})`
 
-## Tests
-
-YouTube-side smoke test endpoint, useful for sanity-checking auth and request shape without burning quota.
-
-### `youtube_tests_insert`
-
-- Purpose: zero-cost call against the YouTube test surface to verify a request without affecting real data.
-- Signature: `(account, part, test_body, external_channel_id=None)`
-- Scopes: `READONLY`
-- Cost: 0
-- Mutating: no (registered without the mutating flag)
-- Example: `youtube_tests_insert(account="primary", part="snippet", test_body={"snippet": {}})`
-
 ## Composition examples
 
 A handful of common flows expressed as call sequences. Quotas are aggregate; budget accordingly.
@@ -925,7 +912,6 @@ Total quota: ~1651 units. Make sure the mutating guard is configured before step
 - All other mutating Data API calls in this server: 50 units each.
 - `search.list`: **100 units per call** (see the search section above).
 - `videos.insert`: **1600 units per upload**.
-- `tests.insert`: 0 units.
 
 ## Cross-references
 
