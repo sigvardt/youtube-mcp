@@ -227,7 +227,7 @@ uvx youtube-complete-mcp tools list --api youtube
 ```
 
 1. `status` shows configured accounts, token freshness, and quota usage.
-2. `doctor` runs a `youtube.tests.insert` auth-probe call per account. Each account should print `PASS`.
+2. `doctor` runs a `youtube.channels.list(mine=true)` auth-probe call per account. Each account should print `OK` when the first returned channel id matches the stored channel id.
 3. `tools list` enumerates every registered MCP tool with its API and quota cost.
 
 If all three are clean, you're done. Hand the server to your agent.
@@ -298,7 +298,7 @@ Check three things:
 
 ### `youtube-mcp doctor` reports `FAIL` for every account
 
-Most likely cause: the YouTube Data API is not enabled on the GCP project that issued the OAuth client. Re-do step 2 and confirm all three APIs are enabled. The `tests.insert` probe used by `doctor` is the cheapest call that exercises auth end-to-end, and it fails fast when the API itself is disabled.
+Most likely cause: the YouTube Data API is not enabled on the GCP project that issued the OAuth client. Re-do step 2 and confirm all three APIs are enabled. The `channels.list(mine=true)` probe used by `doctor` is the cheapest read-only call that exercises auth end-to-end, and it fails fast when the API itself is disabled.
 
 ### Quota errors mid-day
 
