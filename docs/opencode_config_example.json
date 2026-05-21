@@ -3,11 +3,8 @@
     "youtube-mcp": {
       "type": "local",
       "command": [
-        "uv",
-        "--directory",
-        "/absolute/path/to/youtube-mcp",
-        "run",
-        "youtube-mcp",
+        "uvx",
+        "youtube-api-mcp",
         "serve",
         "--transport",
         "stdio"

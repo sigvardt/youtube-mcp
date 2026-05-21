@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-21
+
 ### Breaking changes
 
 - Removed the deprecated `related_to_video_id` parameter from `youtube_search_list`. `search.list` no longer accepts `relatedToVideoId`, so callers should drop that argument.
@@ -17,8 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Documented Google deprecation of `home` on `youtube_activities_list` and `hl` on `youtube_channelSections_list` in the tool docstrings.
 - Removed `on_behalf_of_content_owner_channel` from `youtube_playlistImages_update` and `youtube_playlistImages_delete`. The current Discovery schema no longer accepts `onBehalfOfContentOwnerChannel` for those methods.
-
-## [0.1.0] - 2026-05-19
+- Packaged the release for PyPI under the available `youtube-api-mcp` distribution name, while keeping `youtube-mcp` as a console-script alias.
+- Updated the MCP client examples and install guide to use `uvx youtube-api-mcp ...` for published installs.
+- Removed the local Analytics monetary-scope pre-check so Google returns its canonical `youtubeAnalyticsRevenue` 403 response.
+- Fixed `youtube_analytics_reports_query` so named query parameters and `extra_params` are merged instead of silently dropping the named parameters when extras are present.
 
 ### Added
 
@@ -30,6 +34,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Mutating-operation guard that tags state-changing tools and can enforce an allow-listed channel handle before uploads, edits, moderation actions, ratings, reports, and other writes.
 - Unit, integration, and live-test scaffolding with mocked Google clients, VCR cassettes for read-only integration paths, cross-module registry guards, and coverage enforcement.
 - Agent-facing documentation, installation guide, MCP client config examples, and the `skills/youtube-mcp` reference bundle for tool selection and quota-aware usage.
+- Trusted-publishing GitHub Actions workflow for tag-driven PyPI releases without long-lived API tokens.
+
+### Validated
+
+- Live-read smoke tested multi-account routing across `jsigvardt`, `power-1`, and `power-2`, including YouTube Data API routing, Analytics API routing, Reporting API routing, token-store isolation, and per-account quota counters.
+- Live-mutating sweep against the allow-listed `@jsigvardt` account covered uploads and guarded write paths. Deferred quota-reset revalidation is still required before cutting the final PyPI tag.
 
 ### Security
 

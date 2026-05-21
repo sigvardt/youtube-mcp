@@ -26,6 +26,19 @@ This rule is enforced both at the source level (no `videos_delete` symbol exists
 
 Requires Python 3.11 or 3.12 and [`uv`](https://docs.astral.sh/uv/).
 
+The PyPI distribution name is `youtube-api-mcp`. The shorter `youtube-mcp` package name is already occupied by an unrelated transcript package, so do not install it expecting this server.
+
+Run the published server with `uvx`:
+
+```bash
+uvx youtube-api-mcp --help
+uvx youtube-api-mcp serve --transport stdio
+```
+
+The wheel also installs a `youtube-mcp` console alias for persistent virtual environments. With `uvx`, prefer the distribution-matched `youtube-api-mcp` command above. If a client must call the historical executable name, use `uvx --from youtube-api-mcp youtube-mcp serve --transport stdio`.
+
+For local development from a clone:
+
 ```bash
 git clone https://github.com/joakimsigvardt/youtube-mcp.git
 cd youtube-mcp
@@ -33,13 +46,7 @@ uv sync
 uv run youtube-mcp --help
 ```
 
-For end users who just want to install the wheel (once published):
-
-```bash
-uvx youtube-mcp --help
-```
-
-OAuth setup, GCP project configuration, and the brand-account picker step are covered in [`INSTALL.md`](INSTALL.md). Read it before the first `youtube-mcp auth add`.
+OAuth setup, GCP project configuration, and the brand-account picker step are covered in [`INSTALL.md`](INSTALL.md). Read it before the first `youtube-api-mcp auth add`.
 
 ## Quickstart
 
@@ -47,8 +54,8 @@ OAuth setup, GCP project configuration, and the brand-account picker step are co
 2. Verify the install:
 
    ```bash
-   uv run youtube-mcp status
-   uv run youtube-mcp tools list --api youtube
+   uvx youtube-api-mcp status
+   uvx youtube-api-mcp tools list --api youtube
    ```
 
 3. Wire the server into your MCP client.
@@ -62,7 +69,7 @@ Edit `claude_desktop_config.json` (location varies per OS; see the Anthropic doc
   "mcpServers": {
     "youtube-mcp": {
       "command": "uvx",
-      "args": ["youtube-mcp", "serve", "--transport", "stdio"]
+      "args": ["youtube-api-mcp", "serve", "--transport", "stdio"]
     }
   }
 }
@@ -79,7 +86,7 @@ In your OpenCode config:
   "mcp": {
     "youtube-mcp": {
       "type": "local",
-      "command": ["uvx", "youtube-mcp", "serve", "--transport", "stdio"],
+      "command": ["uvx", "youtube-api-mcp", "serve", "--transport", "stdio"],
       "enabled": true
     }
   }
@@ -91,14 +98,14 @@ In your OpenCode config:
 The server speaks the standard MCP protocol over stdio (default), HTTP, or SSE. Pick the transport that matches your client:
 
 ```bash
-uv run youtube-mcp serve --transport stdio
-uv run youtube-mcp serve --transport http --host 127.0.0.1 --port 8765
-uv run youtube-mcp serve --transport sse  --host 127.0.0.1 --port 8765
+uvx youtube-api-mcp serve --transport stdio
+uvx youtube-api-mcp serve --transport http --host 127.0.0.1 --port 8765
+uvx youtube-api-mcp serve --transport sse --host 127.0.0.1 --port 8765
 ```
 
 ## Tool inventory
 
-There are 17 tool modules under `src/youtube_mcp/tools/`. Run `uv run youtube-mcp tools list` for the live list with quota costs and descriptions. The modules group as follows:
+There are 17 tool modules under `src/youtube_mcp/tools/`. Run `uvx youtube-api-mcp tools list` for the live list with quota costs and descriptions. The modules group as follows:
 
 1. **Data API v3 (read/write):** `activities`, `captions`, `channel_sections`, `channels`, `comment_threads`, `comments`, `i18n`, `live_chat`, `livestream`, `members`, `misc`, `playlists`, `search`, `subscriptions`, `super_chat_events`, `video_assets`, `video_meta`, `videos`.
 2. **Analytics API v2:** `analytics_groups`, `analytics_reports`.

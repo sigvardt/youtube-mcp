@@ -1,6 +1,6 @@
 # INSTALL.md
 
-End-to-end setup for youtube-mcp: GCP project, OAuth client, scopes, local install, account onboarding, brand-account picker, and MCP client wiring.
+End-to-end setup for youtube-mcp: GCP project, OAuth client, scopes, uvx install path, account onboarding, brand-account picker, and MCP client wiring.
 
 Plan to spend 15-30 minutes the first time. The Google Cloud console steps are the slow part; the CLI steps take seconds.
 
@@ -11,18 +11,20 @@ Plan to spend 15-30 minutes the first time. The Google Cloud console steps are t
 3. [`uv`](https://docs.astral.sh/uv/) installed locally. `brew install uv` on macOS, or follow the upstream install instructions.
 4. A working OS keyring. macOS Keychain, Windows Credential Locker, and freedesktop Secret Service (GNOME Keyring, KWallet) all work out of the box. Headless Linux servers need a keyring daemon running; see the Troubleshooting section.
 
-Clone the repo and sync deps:
+The PyPI distribution is `youtube-api-mcp` because the shorter `youtube-mcp` package name is already used by an unrelated project. All end-user commands below use the published `uvx` path:
+
+```bash
+uvx youtube-api-mcp --help
+```
+
+The wheel also provides a `youtube-mcp` console alias for persistent virtual environments. With `uvx`, use `youtube-api-mcp` unless you explicitly need the alias form: `uvx --from youtube-api-mcp youtube-mcp ...`.
+
+For local development from a clone, sync deps and replace `uvx youtube-api-mcp` with `uv run youtube-mcp` in the commands below:
 
 ```bash
 git clone https://github.com/joakimsigvardt/youtube-mcp.git
 cd youtube-mcp
 uv sync
-```
-
-Confirm the CLI is wired:
-
-```bash
-uv run youtube-mcp --help
 ```
 
 You should see the `serve`, `auth`, `status`, `doctor`, and `tools` subcommands.
@@ -77,7 +79,7 @@ Do not commit this file. Add the path to your global `.gitignore` if you keep it
 The `auth add` command runs the OAuth browser flow, captures the refresh token, stashes it in the system keyring under the account key you supply, and stores the (non-secret) account config on disk.
 
 ```bash
-uv run youtube-mcp auth add main-channel \
+uvx youtube-api-mcp auth add main-channel \
   --client-creds ~/.config/youtube-mcp/client_secret.json
 ```
 
@@ -91,8 +93,8 @@ A browser window opens. Walk through it carefully:
 Verify:
 
 ```bash
-uv run youtube-mcp auth list
-uv run youtube-mcp status
+uvx youtube-api-mcp auth list
+uvx youtube-api-mcp status
 ```
 
 `auth list` should show your key, the resolved channel handle (`@something`), the channel ID, and the granted scopes.
@@ -102,7 +104,7 @@ uv run youtube-mcp status
 By default `auth add` requests a sensible read/write scope bundle. To restrict or extend, pass `--scopes`:
 
 ```bash
-uv run youtube-mcp auth add readonly-account \
+uvx youtube-api-mcp auth add readonly-account \
   --client-creds ~/.config/youtube-mcp/client_secret.json \
   --scopes readonly,analytics_readonly
 ```
@@ -131,7 +133,7 @@ Recommended setup for the original maintainer's channel:
 ```bash
 export YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE='@jsigvardt'
 export YOUTUBE_MCP_ENFORCE_GUARD=1
-uv run youtube-mcp serve
+uvx youtube-api-mcp serve
 ```
 
 Recommended setup if you are running this server against your own channel:
@@ -139,7 +141,7 @@ Recommended setup if you are running this server against your own channel:
 ```bash
 export YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE='@your-handle-here'
 export YOUTUBE_MCP_ENFORCE_GUARD=1
-uv run youtube-mcp serve
+uvx youtube-api-mcp serve
 ```
 
 Wire these into your shell profile (`~/.zshrc`, `~/.bashrc`) or, better, into the MCP client config's `env` block so they are scoped to the server.
@@ -162,7 +164,7 @@ Add:
   "mcpServers": {
     "youtube-mcp": {
       "command": "uvx",
-      "args": ["youtube-mcp", "serve", "--transport", "stdio"],
+      "args": ["youtube-api-mcp", "serve", "--transport", "stdio"],
       "env": {
         "YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE": "@your-handle-here",
         "YOUTUBE_MCP_ENFORCE_GUARD": "1"
@@ -203,7 +205,7 @@ In your OpenCode config file:
   "mcp": {
     "youtube-mcp": {
       "type": "local",
-      "command": ["uvx", "youtube-mcp", "serve", "--transport", "stdio"],
+      "command": ["uvx", "youtube-api-mcp", "serve", "--transport", "stdio"],
       "enabled": true,
       "environment": {
         "YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE": "@your-handle-here",
@@ -219,9 +221,9 @@ In your OpenCode config file:
 After everything is wired:
 
 ```bash
-uv run youtube-mcp status
-uv run youtube-mcp doctor
-uv run youtube-mcp tools list --api youtube | head -20
+uvx youtube-api-mcp status
+uvx youtube-api-mcp doctor
+uvx youtube-api-mcp tools list --api youtube
 ```
 
 1. `status` shows configured accounts, token freshness, and quota usage.
@@ -237,7 +239,7 @@ If all three are clean, you're done. Hand the server to your agent.
 The OS keyring is not available. Common causes:
 
 1. Headless Linux box with no Secret Service daemon. Install and start `gnome-keyring-daemon` or `keepassxc` with the Secret Service plugin, or fall back to file-based keyring via `keyrings.alt` (less secure).
-2. SSH session without `DBUS_SESSION_BUS_ADDRESS` exported. Run `dbus-launch youtube-mcp ...` or unlock the keyring inside the session.
+2. SSH session without `DBUS_SESSION_BUS_ADDRESS` exported. Run `dbus-launch youtube-api-mcp ...` or unlock the keyring inside the session.
 3. macOS Keychain locked. Unlock it from Keychain Access and retry.
 
 ### "Token has been expired or revoked" after browser flow
@@ -245,10 +247,10 @@ The OS keyring is not available. Common causes:
 Google revokes refresh tokens that sit unused for six months, or when the user changes password, or if the OAuth app is moved between Testing and Production. Re-run `auth refresh` first; if that fails too, run `auth remove` then `auth add` to redo the OAuth flow.
 
 ```bash
-uv run youtube-mcp auth refresh main-channel
+uvx youtube-api-mcp auth refresh main-channel
 # if still broken:
-uv run youtube-mcp auth remove main-channel --yes
-uv run youtube-mcp auth add main-channel --client-creds ~/.config/youtube-mcp/client_secret.json
+uvx youtube-api-mcp auth remove main-channel --yes
+uvx youtube-api-mcp auth add main-channel --client-creds ~/.config/youtube-mcp/client_secret.json
 ```
 
 ### Brand vs personal account confusion
@@ -258,8 +260,8 @@ A symptom: `auth list` shows a channel handle and ID, but it's not the channel y
 Fix:
 
 ```bash
-uv run youtube-mcp auth remove main-channel --yes
-uv run youtube-mcp auth add main-channel --client-creds ~/.config/youtube-mcp/client_secret.json
+uvx youtube-api-mcp auth remove main-channel --yes
+uvx youtube-api-mcp auth add main-channel --client-creds ~/.config/youtube-mcp/client_secret.json
 ```
 
 When the browser shows the "Choose an account" screen during step 5, **pick the brand account, not the personal one**. If the picker doesn't appear at all, your Google user does not have any brand accounts attached, and the personal account is the only choice. That's fine; just confirm `auth list` shows the channel handle you expect.
@@ -273,7 +275,7 @@ Cause: the account was created with a narrower scope set than the tool needs. Fo
 Fix: re-run `auth add` with the broader scope set. The CLI will re-run the OAuth flow and overwrite the stored token.
 
 ```bash
-uv run youtube-mcp auth add main-channel \
+uvx youtube-api-mcp auth add main-channel \
   --client-creds ~/.config/youtube-mcp/client_secret.json \
   --scopes manage,upload,analytics_readonly,force_ssl
 ```
@@ -292,7 +294,7 @@ Check three things:
 
 1. `echo $YOUTUBE_MCP_MUTATING_ALLOWED_HANDLE` matches the channel handle of the account you're calling. Handles are case-sensitive and must include the leading `@`.
 2. `echo $YOUTUBE_MCP_ENFORCE_GUARD` is `1`. If unset or `0`, the guard is in advisory mode; if you wanted the call to go through, you need to flip enforcement off.
-3. The account's resolved handle, shown by `uv run youtube-mcp auth list`, matches the allow-handle. If it doesn't, you authenticated with the wrong brand account; see the brand vs personal fix above.
+3. The account's resolved handle, shown by `uvx youtube-api-mcp auth list`, matches the allow-handle. If it doesn't, you authenticated with the wrong brand account; see the brand vs personal fix above.
 
 ### `youtube-mcp doctor` reports `FAIL` for every account
 
@@ -302,7 +304,7 @@ Most likely cause: the YouTube Data API is not enabled on the GCP project that i
 
 Each Google Cloud project has a daily YouTube Data API quota of 10,000 units by default. Heavy use (uploads cost 1,600 units each) burns through this fast.
 
-1. `uv run youtube-mcp status` shows current usage per account.
+1. `uvx youtube-api-mcp status` shows current usage per account.
 2. Request a quota increase from the GCP console -> APIs & Services -> Quotas. Approval times vary.
 3. The Analytics and Reporting APIs have their own separate quotas and are usually not the bottleneck.
 
